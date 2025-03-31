@@ -18,6 +18,6 @@ let interval = setInterval(function() {
         valorProgreso += 1;
         progress.value = valorProgreso;
         // Cambiar imagen de progreso
-        //imagenProgreso.src = `/Inicio/ipup.png${100 + valorProgreso}`;
+        //imagenProgreso.src = `ipup.png${100 + valorProgreso}`;
     }
 }, 35);
