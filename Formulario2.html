@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Registro de Limpieza</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f4f6f8;
+      margin: 0;
+      padding: 20px;
+    }
+
+    h2 {
+      text-align: center;
+      color: #333;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      background-color: #fff;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    th, td {
+      padding: 12px 15px;
+      border-bottom: 1px solid #eee;
+    }
+
+    th {
+      background-color: #2c3e50;
+      color: white;
+      text-align: left;
+    }
+
+    tr:hover {
+      background-color: #f1f1f1;
+    }
+
+    input[type="text"], input[type="date"], select {
+      width: 100%;
+      padding: 6px 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+
+    input[type="checkbox"] {
+      width: 20px;
+      height: 20px;
+    }
+
+    .center {
+      text-align: center;
+    }
+
+    button {
+      padding: 10px 20px;
+      background-color: #27ae60;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #219150;
+    }
+
+    .filtros {
+      display: flex;
+      gap: 10px;
+      margin: 20px 0;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .filtros input, .filtros select {
+      max-width: 200px;
+    }
+  </style>
+</head>
+<body>
+  <h2>Registro de Limpieza</h2>
+
+  <!-- Filtros -->
+  <div class="filtros">
+    <input type="date" id="filtroFecha">
+    <select id="filtroLimpieza">
+      <option value="todos">Todos</option>
+      <option value="si">Sí realizaron</option>
+      <option value="no">No realizaron</option>
+    </select>
+    <button onclick="aplicarFiltro()">🔍 Filtrar</button>
+    <button onclick="limpiarFiltro()">❌ Limpiar Filtros</button>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Nombre</th>
+        <th>Fecha</th>
+        <th>Comentario</th>
+        <th class="center">¿Limpieza realizada?</th>
+      </tr>
+    </thead>
+    <tbody id="tablaUsuarios"></tbody>
+  </table>
+
+  <button onclick="guardarDatos()">💾 Guardar Datos</button>
+
+  <script>
+    const usuarios = [
+      "Hno. Alexander", "Hno. Vitmer", "Hno. George Yonatan Soto Navarro", "Hno. Daniel",
+      "Hno. Edgar", "Hno. Blanca", "Hno. Adrian", "Hno. Jose", "Hno. Anderson", "Hno. John Pariona",
+      "Hno. Clemente", "Hna. Betty Rosado", "Hna. Gabriela", "Hno. Julian Samaritano",
+      "Hna. Hna. Elva", "Hna. Edid Santiago", "Hna. Edith Chinchay", "Hna. Jennifer Calderón",
+      "Hna. Karolyne Torres", "Hno. Marcial Avellaneda", "Hna. Milagros Guillén", "Hna. Mishell",
+      "Hno. Sergio Quiliche", "Hna. Geraldine", "Hna. Jhoana Trinidad", "Hna. Ingrid Samaritano",
+      "Hno. Eduardo", "Hno. Rene Puño Pariona", "Hna. Karen Ventura", "Hna. Lida Blas",
+      "Hna. Tessi Blas", "Hna. Reyna Caurino", "Hna. Marlene Estrada", "Hna. Erica",
+      "Hna. Mariela Encinas", "Hno. Jeisen Hilario", "Hno. Sergio Linarez", "Hna. Clara",
+      "Hna. feliciana"
+    ];
+
+    let datosGuardados = JSON.parse(localStorage.getItem("registrosLimpieza")) || [];
+
+    function crearTabla(filtrados = null) {
+      const tabla = document.getElementById("tablaUsuarios");
+      tabla.innerHTML = "";
+
+      const datos = filtrados || usuarios.map((usuario, i) => ({
+        nombre: usuario,
+        ...datosGuardados[i]
+      }));
+
+      datos.forEach((dato, index) => {
+        const fila = document.createElement("tr");
+
+        // Buscar índice real por nombre
+        const realIndex = usuarios.indexOf(dato.nombre);
+        if (realIndex === -1) return;
+
+        fila.innerHTML = `
+          <td>${dato.nombre}</td>
+          <td><input type="date" value="${dato.fecha || ''}" onchange="actualizarDato(${realIndex}, 'fecha', this.value)"></td>
+          <td><input type="text" value="${dato.comentario || ''}" onchange="actualizarDato(${realIndex}, 'comentario', this.value)"></td>
+          <td class="center">
+            <input type="checkbox" ${dato.limpieza ? 'checked' : ''} onchange="actualizarDato(${realIndex}, 'limpieza', this.checked)">
+          </td>
+        `;
+        tabla.appendChild(fila);
+      });
+    }
+
+    function actualizarDato(index, campo, valor) {
+      if (!datosGuardados[index]) {
+        datosGuardados[index] = { fecha: "", comentario: "", limpieza: false };
+      }
+      datosGuardados[index][campo] = valor;
+    }
+
+    function guardarDatos() {
+      localStorage.setItem("registrosLimpieza", JSON.stringify(datosGuardados));
+      alert("✅ Datos guardados correctamente.");
+    }
+
+    function aplicarFiltro() {
+      const fechaFiltro = document.getElementById("filtroFecha").value;
+      const limpiezaFiltro = document.getElementById("filtroLimpieza").value;
+
+      const filtrados = usuarios.map((nombre, i) => ({
+        nombre,
+        ...datosGuardados[i]
+      })).filter(dato => {
+        const coincideFecha = !fechaFiltro || dato.fecha === fechaFiltro;
+        const coincideLimpieza =
+          limpiezaFiltro === "todos" ||
+          (limpiezaFiltro === "si" && dato.limpieza) ||
+          (limpiezaFiltro === "no" && !dato.limpieza);
+        return coincideFecha && coincideLimpieza;
+      });
+
+      crearTabla(filtrados);
+    }
+
+    function limpiarFiltro() {
+      document.getElementById("filtroFecha").value = "";
+      document.getElementById("filtroLimpieza").value = "todos";
+      crearTabla();
+    }
+
+    crearTabla();
+  </script>
+</body>
+</html>
