@@ -16,6 +16,23 @@
       color: #333;
     }
 
+    .filtros, .registro {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 20px 0;
+      justify-content: center;
+    }
+
+    .filtros input, .filtros select, .registro input {
+      max-width: 200px;
+      width: 100%;
+      padding: 6px 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+
     table {
       width: 100%;
       border-collapse: collapse;
@@ -23,7 +40,7 @@
       background-color: #fff;
       box-shadow: 0 4px 8px rgba(0,0,0,0.05);
       border-radius: 8px;
-      overflow: hidden;
+      overflow-x: auto;
     }
 
     th, td {
@@ -73,16 +90,43 @@
       background-color: #219150;
     }
 
-    .filtros {
-      display: flex;
-      gap: 10px;
-      margin: 20px 0;
-      flex-wrap: wrap;
-      justify-content: center;
-    }
+    @media (max-width: 768px) {
+      table, thead, tbody, th, td, tr {
+        display: block;
+      }
 
-    .filtros input, .filtros select {
-      max-width: 200px;
+      thead tr {
+        display: none;
+      }
+
+      td {
+        position: relative;
+        padding-left: 50%;
+        border-bottom: 1px solid #eee;
+      }
+
+      td::before {
+        content: attr(data-label);
+        position: absolute;
+        left: 10px;
+        width: 45%;
+        font-weight: bold;
+        color: #555;
+      }
+
+      table {
+        border: none;
+        box-shadow: none;
+      }
+
+      .filtros, .registro {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      input[type="text"], input[type="date"], select {
+        max-width: 100%;
+      }
     }
   </style>
 </head>
@@ -101,6 +145,12 @@
     <button onclick="limpiarFiltro()">❌ Limpiar Filtros</button>
   </div>
 
+  <!-- Registro de nuevo usuario -->
+  <div class="registro">
+    <input type="text" id="nuevoUsuario" placeholder="Nuevo hermano/a">
+    <button onclick="registrarUsuario()">➕ Registrar Usuario</button>
+  </div>
+
   <table>
     <thead>
       <tr>
@@ -116,7 +166,7 @@
   <button onclick="guardarDatos()">💾 Guardar Datos</button>
 
   <script>
-    const usuarios = [
+    let usuarios = JSON.parse(localStorage.getItem("usuariosLista")) || [
       "Hno. Alexander", "Hno. Vitmer", "Hno. George Yonatan Soto Navarro", "Hno. Daniel",
       "Hno. Edgar", "Hno. Blanca", "Hno. Adrian", "Hno. Jose", "Hno. Anderson", "Hno. John Pariona",
       "Hno. Clemente", "Hna. Betty Rosado", "Hna. Gabriela", "Hno. Julian Samaritano",
@@ -142,16 +192,13 @@
 
       datos.forEach((dato, index) => {
         const fila = document.createElement("tr");
-
-        // Buscar índice real por nombre
         const realIndex = usuarios.indexOf(dato.nombre);
-        if (realIndex === -1) return;
 
         fila.innerHTML = `
-          <td>${dato.nombre}</td>
-          <td><input type="date" value="${dato.fecha || ''}" onchange="actualizarDato(${realIndex}, 'fecha', this.value)"></td>
-          <td><input type="text" value="${dato.comentario || ''}" onchange="actualizarDato(${realIndex}, 'comentario', this.value)"></td>
-          <td class="center">
+          <td data-label="Nombre">${dato.nombre}</td>
+          <td data-label="Fecha"><input type="date" value="${dato.fecha || ''}" onchange="actualizarDato(${realIndex}, 'fecha', this.value)"></td>
+          <td data-label="Comentario"><input type="text" value="${dato.comentario || ''}" onchange="actualizarDato(${realIndex}, 'comentario', this.value)"></td>
+          <td data-label="¿Limpieza realizada?" class="center">
             <input type="checkbox" ${dato.limpieza ? 'checked' : ''} onchange="actualizarDato(${realIndex}, 'limpieza', this.checked)">
           </td>
         `;
@@ -168,6 +215,7 @@
 
     function guardarDatos() {
       localStorage.setItem("registrosLimpieza", JSON.stringify(datosGuardados));
+      localStorage.setItem("usuariosLista", JSON.stringify(usuarios));
       alert("✅ Datos guardados correctamente.");
     }
 
@@ -193,6 +241,24 @@
     function limpiarFiltro() {
       document.getElementById("filtroFecha").value = "";
       document.getElementById("filtroLimpieza").value = "todos";
+      crearTabla();
+    }
+
+    function registrarUsuario() {
+      const nuevoNombre = document.getElementById("nuevoUsuario").value.trim();
+      if (!nuevoNombre) {
+        alert("⚠️ Por favor ingresa un nombre.");
+        return;
+      }
+
+      if (usuarios.includes(nuevoNombre)) {
+        alert("⚠️ Este hermano ya está registrado.");
+        return;
+      }
+
+      usuarios.push(nuevoNombre);
+      datosGuardados.push({ fecha: "", comentario: "", limpieza: false });
+      document.getElementById("nuevoUsuario").value = "";
       crearTabla();
     }
 
