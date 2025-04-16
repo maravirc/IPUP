@@ -2,8 +2,13 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Registro de Limpieza</title>
   <style>
+    * {
+      box-sizing: border-box;
+    }
+
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       background-color: #f4f6f8;
@@ -27,25 +32,50 @@
     .filtros input, .filtros select, .registro input {
       max-width: 200px;
       width: 100%;
-      padding: 6px 10px;
+      padding: 8px;
       border: 1px solid #ccc;
       border-radius: 4px;
       font-size: 14px;
     }
 
+    button {
+      padding: 10px 20px;
+      background-color: #27ae60;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #219150;
+    }
+
+    /* Estilo para la tabla con Flexbox */
+    .tabla-responsive {
+      width: 100%;
+      overflow-x: auto;
+      overflow-y: auto; /* Añadido scroll vertical */
+      max-height: 400px; /* Maxima altura de la tabla, ajusta según lo necesites */
+      -webkit-overflow-scrolling: touch;
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+      margin-top: 20px;
+    }
+
     table {
       width: 100%;
+      min-width: 800px; /* Fuerza scroll horizontal en móviles */
       border-collapse: collapse;
-      margin-top: 20px;
-      background-color: #fff;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.05);
-      border-radius: 8px;
-      overflow-x: auto;
     }
 
     th, td {
       padding: 12px 15px;
       border-bottom: 1px solid #eee;
+      white-space: nowrap;
     }
 
     th {
@@ -75,48 +105,10 @@
       text-align: center;
     }
 
-    button {
-      padding: 10px 20px;
-      background-color: #27ae60;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      font-size: 14px;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-    }
-
-    button:hover {
-      background-color: #219150;
-    }
-
+    /* Media Query para pantallas pequeñas */
     @media (max-width: 768px) {
-      table, thead, tbody, th, td, tr {
-        display: block;
-      }
-
-      thead tr {
-        display: none;
-      }
-
-      td {
-        position: relative;
-        padding-left: 50%;
-        border-bottom: 1px solid #eee;
-      }
-
-      td::before {
-        content: attr(data-label);
-        position: absolute;
-        left: 10px;
-        width: 45%;
-        font-weight: bold;
-        color: #555;
-      }
-
-      table {
-        border: none;
-        box-shadow: none;
+      body {
+        padding: 10px;
       }
 
       .filtros, .registro {
@@ -124,8 +116,12 @@
         align-items: center;
       }
 
-      input[type="text"], input[type="date"], select {
+      .filtros select, .filtros input, .registro input {
         max-width: 100%;
+      }
+
+      table {
+        min-width: 600px;
       }
     }
   </style>
@@ -151,19 +147,22 @@
     <button onclick="registrarUsuario()">➕ Registrar Usuario</button>
   </div>
 
-  <table>
-    <thead>
-      <tr>
-        <th>Nombre</th>
-        <th>Fecha</th>
-        <th>Comentario</th>
-        <th class="center">¿Limpieza realizada?</th>
-      </tr>
-    </thead>
-    <tbody id="tablaUsuarios"></tbody>
-  </table>
+  <!-- Tabla dentro de contenedor con scroll -->
+  <div class="tabla-responsive">
+    <table>
+      <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>Fecha</th>
+          <th>Comentario</th>
+          <th class="center">¿Limpieza realizada?</th>
+        </tr>
+      </thead>
+      <tbody id="tablaUsuarios"></tbody>
+    </table>
+  </div>
 
-  <button onclick="guardarDatos()">💾 Guardar Datos</button>
+  <button style="margin: 20px auto; display: block;" onclick="guardarDatos()">💾 Guardar Datos</button>
 
   <script>
     let usuarios = JSON.parse(localStorage.getItem("usuariosLista")) || [
@@ -195,10 +194,10 @@
         const realIndex = usuarios.indexOf(dato.nombre);
 
         fila.innerHTML = `
-          <td data-label="Nombre">${dato.nombre}</td>
-          <td data-label="Fecha"><input type="date" value="${dato.fecha || ''}" onchange="actualizarDato(${realIndex}, 'fecha', this.value)"></td>
-          <td data-label="Comentario"><input type="text" value="${dato.comentario || ''}" onchange="actualizarDato(${realIndex}, 'comentario', this.value)"></td>
-          <td data-label="¿Limpieza realizada?" class="center">
+          <td>${dato.nombre}</td>
+          <td><input type="date" value="${dato.fecha || ''}" onchange="actualizarDato(${realIndex}, 'fecha', this.value)"></td>
+          <td><input type="text" value="${dato.comentario || ''}" onchange="actualizarDato(${realIndex}, 'comentario', this.value)"></td>
+          <td class="center">
             <input type="checkbox" ${dato.limpieza ? 'checked' : ''} onchange="actualizarDato(${realIndex}, 'limpieza', this.checked)">
           </td>
         `;
@@ -266,3 +265,4 @@
   </script>
 </body>
 </html>
+
