@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Turnos de Limpieza</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f4f6f8;
+      margin: 0;
+      padding: 20px;
+    }
+
+    h2 {
+      text-align: center;
+      color: #333;
+    }
+
+    .hermanos-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: center;
+    }
+
+    .hermano-card {
+      background-color: #ffffff;
+      padding: 15px;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      text-align: center;
+      width: 200px;
+    }
+
+    .hermano-card h3 {
+      margin: 0;
+      color: #333;
+    }
+
+    .hermano-card p {
+      margin: 10px 0;
+      color: #2a2b2a;
+    }
+
+    .turno {
+      font-weight: bold;
+      color: #27ae60;
+    }
+
+.fecha {
+  font-size: 14px;
+  color: #777;
+}
+
+
+
+
+    .turno-container {
+      margin-bottom: 30px;
+    }
+
+    .turno-container h3 {
+      text-align: center;
+      color: #27ae60;
+      font-size: 18px;
+      margin-bottom: 10px;
+    }
+
+    button {
+      width: 100%; /* Establece el botón de extremo a extremo */
+      margin-top: 20px;
+      padding: 10px 20px;
+      background-color: #27ae60;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #219150;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Turnos de Limpieza</h2>
+
+  <!-- Contenedores para los turnos -->
+  <div class="turno-container" id="turnoManana">
+    <h3>Turno Mañana</h3>
+    <div class="hermanos-container" id="hermanosManana"></div>
+  </div>
+
+  <div class="turno-container" id="turnoTarde">
+    <h3>Turno Tarde</h3>
+    <div class="hermanos-container" id="hermanosTarde"></div>
+  </div>
+
+  <div class="turno-container" id="turnoPunto">
+    <h3>Lista de Limpieza</h3>
+    <div class="hermanos-container" id="hermanosPunto"></div>
+  </div>
+
+  <!-- Botón de exportación -->
+  <button onclick="exportarPDF()">Exportar a PDF</button>
+
+  <!-- Incluir html2pdf.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.js"></script>
+
+  <script>
+ function formatearFechaBonita(fechaStr) {
+  const fecha = new Date(fechaStr);
+  const opciones = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
+  const fechaFormateada = fecha.toLocaleDateString('es-ES', opciones);
+
+  // Capitalizar la primera letra (día de la semana)
+  return fechaFormateada.charAt(0).toUpperCase() + fechaFormateada.slice(1);
+}
+
+
+    // Obtener los hermanos seleccionados desde localStorage
+    const hermanosSeleccionados = JSON.parse(localStorage.getItem("hermanosSeleccionados"));
+
+    if (!hermanosSeleccionados || hermanosSeleccionados.length === 0) {
+      document.getElementById("hermanosContainer").innerHTML = "<p>No hay hermanos seleccionados para los turnos.</p>";
+    } else {
+      // Contenedores para los turnos
+      const contenedorManana = document.getElementById("hermanosManana");
+      const contenedorTarde = document.getElementById("hermanosTarde");
+      const contenedorPunto = document.getElementById("hermanosPunto");
+
+      // Separar hermanos por turno
+      hermanosSeleccionados.forEach(hermano => {
+        const card = document.createElement("div");
+        card.classList.add("hermano-card");
+
+        card.innerHTML = `
+          <h3>${hermano.nombre}</h3>
+          <p class="turno">${hermano.turno}</p>
+          <p class="fecha">${formatearFechaBonita(hermano.fecha)}</p>
+
+        `;
+
+        // Mostrar el hermano en el turno correspondiente
+        if (hermano.turno === "Mañana") {
+          contenedorManana.appendChild(card);
+        } else if (hermano.turno === "Tarde") {
+          contenedorTarde.appendChild(card);
+        } else if (hermano.turno === ".") { // Para el turno con punto
+          contenedorPunto.appendChild(card);
+        }
+      });
+    }
+
+    // Función para exportar a PDF con html2pdf.js
+    function exportarPDF() {
+      const opciones = {
+        margin:       1,
+        filename:     'turnos_limpieza.pdf',
+        html2canvas:  { scale: 2 },
+        jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+      };
+
+      // Convertir el contenido de la página a PDF
+      const element = document.body; // Exporta toda la página
+      html2pdf().from(element).set(opciones).save();
+    }
+  </script>
+
+</body>
+</html>
+
+
+
+
+
+
