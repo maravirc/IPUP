@@ -53,12 +53,11 @@
       background-color: #219150;
     }
 
-    /* Estilo para la tabla con Flexbox */
     .tabla-responsive {
       width: 100%;
       overflow-x: auto;
-      overflow-y: auto; /* Añadido scroll vertical */
-      max-height: 400px; /* Maxima altura de la tabla, ajusta según lo necesites */
+      overflow-y: auto;
+      max-height: 400px;
       -webkit-overflow-scrolling: touch;
       background-color: white;
       border-radius: 8px;
@@ -68,7 +67,7 @@
 
     table {
       width: 100%;
-      min-width: 800px; /* Fuerza scroll horizontal en móviles */
+      min-width: 900px;
       border-collapse: collapse;
     }
 
@@ -105,7 +104,6 @@
       text-align: center;
     }
 
-    /* Media Query para pantallas pequeñas */
     @media (max-width: 768px) {
       body {
         padding: 10px;
@@ -137,8 +135,18 @@
       <option value="si">Sí realizaron</option>
       <option value="no">No realizaron</option>
     </select>
+    <select id="filtroPeriodo">
+      <option value="ninguno">Filtrar por</option>
+      <option value="semana">Semana</option>
+      <option value="mes">Mes</option>
+    </select>
     <button onclick="aplicarFiltro()">🔍 Filtrar</button>
     <button onclick="limpiarFiltro()">❌ Limpiar Filtros</button>
+  </div>
+
+  <!-- Buscar por nombre -->
+  <div class="filtros">
+    <input type="text" id="buscadorNombre" placeholder="Buscar por nombre..." oninput="buscarPorNombre()">
   </div>
 
   <!-- Registro de nuevo usuario -->
@@ -147,13 +155,14 @@
     <button onclick="registrarUsuario()">➕ Registrar Usuario</button>
   </div>
 
-  <!-- Tabla dentro de contenedor con scroll -->
+  <!-- Tabla -->
   <div class="tabla-responsive">
     <table>
       <thead>
         <tr>
           <th>Nombre</th>
           <th>Fecha</th>
+          <th>Turno</th>
           <th>Comentario</th>
           <th class="center">¿Limpieza realizada?</th>
         </tr>
@@ -163,19 +172,11 @@
   </div>
 
   <button style="margin: 20px auto; display: block;" onclick="guardarDatos()">💾 Guardar Datos</button>
+  <button style="margin: 20px auto; display: block;" onclick="redirigirATurno()">🕒 Ir a Turno</button>
 
   <script>
     let usuarios = JSON.parse(localStorage.getItem("usuariosLista")) || [
-      "Hno. Alexander", "Hno. Vitmer", "Hno. George Yonatan Soto Navarro", "Hno. Daniel",
-      "Hno. Edgar", "Hno. Blanca", "Hno. Adrian", "Hno. Jose", "Hno. Anderson", "Hno. John Pariona",
-      "Hno. Clemente", "Hna. Betty Rosado", "Hna. Gabriela", "Hno. Julian Samaritano",
-      "Hna. Hna. Elva", "Hna. Edid Santiago", "Hna. Edith Chinchay", "Hna. Jennifer Calderón",
-      "Hna. Karolyne Torres", "Hno. Marcial Avellaneda", "Hna. Milagros Guillén", "Hna. Mishell",
-      "Hno. Sergio Quiliche", "Hna. Geraldine", "Hna. Jhoana Trinidad", "Hna. Ingrid Samaritano",
-      "Hno. Eduardo", "Hno. Rene Puño Pariona", "Hna. Karen Ventura", "Hna. Lida Blas",
-      "Hna. Tessi Blas", "Hna. Reyna Caurino", "Hna. Marlene Estrada", "Hna. Erica",
-      "Hna. Mariela Encinas", "Hno. Jeisen Hilario", "Hno. Sergio Linarez", "Hna. Clara",
-      "Hna. feliciana"
+      "Hno. Alexander", "Hno. Vitmer", "Hno. George", "Hno. Daniel"
     ];
 
     let datosGuardados = JSON.parse(localStorage.getItem("registrosLimpieza")) || [];
@@ -194,8 +195,17 @@
         const realIndex = usuarios.indexOf(dato.nombre);
 
         fila.innerHTML = `
-          <td>${dato.nombre}</td>
+          <td ondblclick="editarNombre(this, ${realIndex})">
+            🖊️ <span>${dato.nombre}</span>
+          </td>
           <td><input type="date" value="${dato.fecha || ''}" onchange="actualizarDato(${realIndex}, 'fecha', this.value)"></td>
+          <td>
+            <select onchange="actualizarDato(${realIndex}, 'turno', this.value)">
+              <option value="." ${dato.turno === "." ? 'selected' : ''}>.</option>
+              <option value="Mañana" ${dato.turno === "Mañana" ? 'selected' : ''}>Mañana</option>
+              <option value="Tarde" ${dato.turno === "Tarde" ? 'selected' : ''}>Tarde</option>
+            </select>
+          </td>
           <td><input type="text" value="${dato.comentario || ''}" onchange="actualizarDato(${realIndex}, 'comentario', this.value)"></td>
           <td class="center">
             <input type="checkbox" ${dato.limpieza ? 'checked' : ''} onchange="actualizarDato(${realIndex}, 'limpieza', this.checked)">
@@ -207,7 +217,7 @@
 
     function actualizarDato(index, campo, valor) {
       if (!datosGuardados[index]) {
-        datosGuardados[index] = { fecha: "", comentario: "", limpieza: false };
+        datosGuardados[index] = { fecha: "", comentario: "", limpieza: false, turno: "" };
       }
       datosGuardados[index][campo] = valor;
     }
@@ -221,6 +231,7 @@
     function aplicarFiltro() {
       const fechaFiltro = document.getElementById("filtroFecha").value;
       const limpiezaFiltro = document.getElementById("filtroLimpieza").value;
+      const periodoFiltro = document.getElementById("filtroPeriodo").value;
 
       const filtrados = usuarios.map((nombre, i) => ({
         nombre,
@@ -231,7 +242,13 @@
           limpiezaFiltro === "todos" ||
           (limpiezaFiltro === "si" && dato.limpieza) ||
           (limpiezaFiltro === "no" && !dato.limpieza);
-        return coincideFecha && coincideLimpieza;
+
+        // Filtrar por mes o semana
+        const coincidePeriodo = periodoFiltro === "ninguno" || 
+                                (periodoFiltro === "semana" && esMismaSemana(dato.fecha)) || 
+                                (periodoFiltro === "mes" && esMismoMes(dato.fecha));
+
+        return coincideFecha && coincideLimpieza && coincidePeriodo;
       });
 
       crearTabla(filtrados);
@@ -240,7 +257,19 @@
     function limpiarFiltro() {
       document.getElementById("filtroFecha").value = "";
       document.getElementById("filtroLimpieza").value = "todos";
+      document.getElementById("filtroPeriodo").value = "ninguno";
       crearTabla();
+    }
+
+    function buscarPorNombre() {
+      const texto = document.getElementById("buscadorNombre").value.toLowerCase();
+
+      const filtrados = usuarios.map((nombre, i) => ({
+        nombre,
+        ...datosGuardados[i]
+      })).filter(dato => dato.nombre.toLowerCase().includes(texto));
+
+      crearTabla(filtrados);
     }
 
     function registrarUsuario() {
@@ -256,13 +285,72 @@
       }
 
       usuarios.push(nuevoNombre);
-      datosGuardados.push({ fecha: "", comentario: "", limpieza: false });
+      datosGuardados.push({ fecha: "", comentario: "", limpieza: false, turno: "Mañana" });
       document.getElementById("nuevoUsuario").value = "";
       crearTabla();
     }
 
+    // Función para verificar si la fecha es la misma semana
+    function esMismaSemana(fecha) {
+      const dia = new Date(fecha);
+      const inicioSemana = new Date(dia.setDate(dia.getDate() - dia.getDay()));
+      const finSemana = new Date(dia.setDate(dia.getDate() - dia.getDay() + 6));
+      
+      const fechaFiltro = new Date(document.getElementById("filtroFecha").value);
+      return fechaFiltro >= inicioSemana && fechaFiltro <= finSemana;
+    }
+
+    // Función para verificar si la fecha es el mismo mes
+    function esMismoMes(fecha) {
+      const dia = new Date(fecha);
+      const fechaFiltro = new Date(document.getElementById("filtroFecha").value);
+      return dia.getMonth() === fechaFiltro.getMonth() && dia.getFullYear() === fechaFiltro.getFullYear();
+    }
+
+    // Cargar la tabla inicial
     crearTabla();
+
+
+  function redirigirATurno() {
+    const seleccionados = [];
+    const filas = document.querySelectorAll("#tablaUsuarios tr");
+
+    filas.forEach((fila, index) => {
+      const checkbox = fila.querySelector("input[type='checkbox']");
+      let fecha = fila.querySelector("input[type='date']").value;
+      const turno = fila.querySelector("select").value;
+      const nombre = usuarios[index];
+
+      // Aseguramos que la fecha no esté vacía
+      if (fecha) {
+        const adjustedDate = new Date(fecha);
+
+        // Aumentamos un día a la fecha
+        adjustedDate.setDate(adjustedDate.getDate() + 1);
+
+        // Convertimos la fecha ajustada a formato YYYY-MM-DD
+        fecha = adjustedDate.toISOString().split("T")[0]; // Formato: YYYY-MM-DD
+      }
+
+      // Validar si el turno es "Mañana" o "Tarde" y si el checkbox está marcado
+      if (checkbox.checked) {
+        seleccionados.push({ nombre, fecha, turno });
+      }
+    });
+
+    if (seleccionados.length === 0) {
+      alert("⚠️ No has seleccionado ningún hermano para el turno.");
+      return;
+    }
+
+    // Guardar los seleccionados en localStorage
+    localStorage.setItem("hermanosSeleccionados", JSON.stringify(seleccionados));
+
+    // Redirigir a formularioturno.html
+    window.location.href = "formularioturno.html";
+  }
+
+
   </script>
 </body>
 </html>
-
