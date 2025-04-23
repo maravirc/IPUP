@@ -21,23 +21,33 @@
       color: #333;
     }
 
-    .filtros {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 20px;
+    /* Fijar el contenedor de búsqueda, título y botón */
+    .header {
+      position: sticky;
+      top: 0;
+      background-color: #fff;
+      z-index: 10;
+      padding: 10px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     }
 
-    .filtros input {
+    .filtros, .registro {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: space-between;
+    }
+
+    .filtros input, .filtros select, .registro input, button {
+      max-width: 200px;
+      width: 100%;
       padding: 8px;
       border: 1px solid #ccc;
       border-radius: 4px;
       font-size: 14px;
-      width: 60%;
-      max-width: 300px;
     }
 
-    .filtros button {
+    button {
       padding: 10px 20px;
       background-color: #27ae60;
       color: white;
@@ -48,74 +58,72 @@
       transition: background-color 0.3s ease;
     }
 
-    .filtros button:hover {
+    button:hover {
       background-color: #219150;
     }
 
     .tabla-responsive {
       width: 100%;
       overflow-x: auto;
-      margin-top: 20px;
+      overflow-y: auto;
+      max-height: 400px;
+      -webkit-overflow-scrolling: touch;
       background-color: white;
       border-radius: 8px;
       box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+      margin-top: 20px;
     }
 
-    .tabla-wrapper {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: flex-start;
-      gap: 10px;
-    }
-
-    .hermano {
+    table {
       width: 100%;
-      max-width: 350px;
-      padding: 15px;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      margin-bottom: 20px;
-      background-color: #fafafa;
+      min-width: 600px;
+      border-collapse: collapse;
     }
 
-    .campo {
-      display: flex;
-      flex-direction: column;
-      margin-bottom: 10px;
+    th, td {
+      padding: 12px 15px;
+      border-bottom: 1px solid #eee;
+      white-space: nowrap;
     }
 
-    .campo label {
-      font-weight: bold;
-      margin-bottom: 5px;
+    th {
+      background-color: #2c3e50;
+      color: white;
+      text-align: left;
     }
 
-    .campo input, .campo textarea {
+    tr:hover {
+      background-color: #f1f1f1;
+    }
+
+    input[type="text"], input[type="date"], select {
       width: 100%;
-      padding: 10px 12px;
+      padding: 6px 10px;
       border: 1px solid #ccc;
       border-radius: 4px;
       font-size: 14px;
     }
 
-    textarea {
-      height: 80px; /* Suficiente altura para el comentario */
-      resize: vertical;
+    .center {
+      text-align: center;
     }
 
     .limpieza-realizada {
       font-weight: bold;
-      padding: 5px;
-      border-radius: 4px;
     }
 
     .limpieza-realizada.sí {
       color: white;
       background-color: #27ae60; /* Verde cuando se realiza limpieza */
+      padding: 5px;
+      border-radius: 4px;
     }
 
     .limpieza-realizada.no {
       color: white;
       background-color: #e74c3c; /* Rojo cuando no se realiza limpieza */
+      padding: 5px;
+      border-radius: 4px;
     }
 
     @media (max-width: 768px) {
@@ -123,44 +131,43 @@
         padding: 10px;
       }
 
-      .tabla-wrapper {
+      .filtros, .registro {
         flex-direction: column;
         align-items: center;
       }
 
-      .hermano {
-        width: 100%; /* Hace que cada div de hermano ocupe todo el ancho */
-      }
-
-      .campo {
+      .filtros select, .filtros input, .registro input {
         max-width: 100%;
       }
 
-      .filtros {
-        flex-direction: column;
-        align-items: center;
-      }
-
-      .filtros input {
-        width: 80%;
-        max-width: 100%;
-        margin-bottom: 10px;
+      table {
+        min-width: 600px;
       }
     }
   </style>
 </head>
 <body>
-  <h2>Registro de Limpieza</h2>
-
-  <!-- Filtros -->
-  <div class="filtros">
-    <input type="text" id="buscarNombre" placeholder="Buscar por nombre..." oninput="filtrarNombres()">
-    <button onclick="redirigirATurno()">🕒 Mostrar Horarios</button>
+  <div class="header">
+    <h2>Registro de Limpieza</h2>
+    <div class="filtros">
+      <input type="text" id="buscarNombre" placeholder="Buscar por nombre..." onkeyup="filtrarTabla()">
+      <button onclick="redirigirATurno()">🕒 Mostrar Horarios</button>
+    </div>
   </div>
 
-  <!-- Contenedor para los campos de la tabla -->
+  <!-- Tabla -->
   <div class="tabla-responsive">
-    <div class="tabla-wrapper" id="tablaUsuarios"></div>
+    <table>
+      <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>Fecha</th>
+          <th>Limpieza Realizada</th>
+          <th>Comentarios</th> <!-- Columna de Comentarios -->
+        </tr>
+      </thead>
+      <tbody id="tablaUsuarios"></tbody>
+    </table>
   </div>
 
   <script>
@@ -177,6 +184,7 @@
       "Hna. Feliciana"
     ];
 
+    // Fechas y limpieza predefinidos
     let fechas = [
       "2025-04-25", "2025-04-26", "2025-04-27", "2025-04-28", "2025-04-29", "2025-04-30",
       "2025-05-01", "2025-05-02", "2025-05-03", "2025-05-04", "2025-05-05", "2025-05-06",
@@ -187,7 +195,7 @@
     ];
 
     let limpiezaRealizada = [
-      false, false, true, true, false, true, true, false, true, false, true, false,
+      true, false, true, true, false, true, true, false, true, false, true, false,
       true, true, false, true, true, false, true, true, false, true, true, false,
       true, true, false, true, true, true, true, false, true, false
     ];
@@ -213,31 +221,19 @@
       tabla.innerHTML = "";
 
       usuarios.forEach((usuario, i) => {
-        const hermanoDiv = document.createElement("div");
-        hermanoDiv.classList.add("hermano");
+        const fila = document.createElement("tr");
 
-        hermanoDiv.innerHTML = `
-          <div class="campo">
-            <label>Nombre:</label>
-            <span>${usuario}</span>
-          </div>
-          <div class="campo">
-            <label>Fecha:</label>
-            <input type="text" value="${fechas[i]}" onchange="actualizarDato(${i}, 'fecha', this.value)">
-          </div>
-          <div class="campo">
-            <label>Limpieza Realizada:</label>
-            <div class="limpieza-realizada ${limpiezaRealizada[i] ? 'sí' : 'no'}">
-              ${limpiezaRealizada[i] ? 'Sí' : 'No'}
-            </div>
-          </div>
-          <div class="campo comentarios">
-            <label>Comentarios:</label>
-            <textarea onchange="actualizarDato(${i}, 'comentarios', this.value)">${comentarios[i]}</textarea>
-          </div>
+        fila.innerHTML = `
+          <td>
+            🖊️ <span>${usuario}</span>
+          </td>
+          <td><input type="text" value="${fechas[i]}" onchange="actualizarDato(${i}, 'fecha', this.value)"></td>
+          <td class="limpieza-realizada ${limpiezaRealizada[i] ? 'sí' : 'no'}">
+            ${limpiezaRealizada[i] ? 'Sí' : 'No'}
+          </td>
+          <td><input type="text" value="${comentarios[i]}" onchange="actualizarDato(${i}, 'comentarios', this.value)"></td>
         `;
-        
-        tabla.appendChild(hermanoDiv);
+        tabla.appendChild(fila);
       });
     }
 
@@ -249,24 +245,18 @@
       }
     }
 
-    function filtrarNombres() {
-      const filtro = document.getElementById('buscarNombre').value.toLowerCase();
-      const tabla = document.getElementById("tablaUsuarios");
-      const hermanos = tabla.getElementsByClassName('hermano');
-      
-      Array.from(hermanos).forEach(hermanoDiv => {
-        const nombre = hermanoDiv.querySelector('span').textContent.toLowerCase();
-        if (nombre.includes(filtro)) {
-          hermanoDiv.style.display = "";
+    function filtrarTabla() {
+      const busqueda = document.getElementById("buscarNombre").value.toLowerCase();
+      const filas = document.querySelectorAll("#tablaUsuarios tr");
+
+      filas.forEach((fila, i) => {
+        const nombre = usuarios[i].toLowerCase();
+        if (nombre.includes(busqueda)) {
+          fila.style.display = "";
         } else {
-          hermanoDiv.style.display = "none";
+          fila.style.display = "none";
         }
       });
-    }
-
-    function redirigirATurno() {
-      // Aquí puedes agregar la lógica de redirección a la página de horarios
-      alert('Redirigiendo a la página de horarios...');
     }
 
     // Cargar la tabla inicial
@@ -274,5 +264,6 @@
   </script>
 </body>
 </html>
+
 
 
