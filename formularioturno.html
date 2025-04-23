@@ -26,16 +26,19 @@
 
     .hermano-card {
       background-color: #ffffff;
-      padding: 15px;
+      padding: 20px; /* Aumentar padding para dar más espacio */
       border-radius: 8px;
       box-shadow: 0 4px 8px rgba(0,0,0,0.1);
       text-align: center;
-      width: 200px;
+      width: 250px; /* Aumentar el tamaño de los cards */
+      max-width: 300px; /* No permitir que se estiren demasiado */
+      min-width: 220px; /* Ancho mínimo para cards */
     }
 
     .hermano-card h3 {
       margin: 0;
       color: #333;
+      font-size: 18px; /* Aumentar el tamaño del nombre */
     }
 
     .hermano-card p {
@@ -60,7 +63,7 @@
     .turno-container h3 {
       text-align: center;
       color: #27ae60;
-      font-size: 18px;
+      font-size: 20px; /* Título más grande */
       margin-bottom: 10px;
     }
 
@@ -79,6 +82,17 @@
 
     button:hover {
       background-color: #219150;
+    }
+
+    @media (max-width: 768px) {
+      .hermano-card {
+        width: 100%; /* En pantallas pequeñas, los cards ocupan todo el ancho */
+        max-width: 100%;
+      }
+
+      .turno-container h3 {
+        font-size: 18px; /* Reducir el tamaño del título en pantallas pequeñas */
+      }
     }
   </style>
 </head>
@@ -106,8 +120,6 @@
     <div class="hermanos-container" id="hermanosTarde"></div>
   </div>
 
- 
-
   <!-- Botón de exportación -->
   <button onclick="exportarPDF()">Exportar a PDF</button>
 
@@ -124,11 +136,6 @@
 
     // Lista actualizada de hermanos seleccionados con turnos Martes y Jueves incluidos
     const hermanosSeleccionados = [
-      //### Esto es para Domingos
-      //{ nombre: "Hno Alexander", turno: "Mañana", fecha: "2025-04-23" },
-      //{ nombre: "Hno Bitme", turno: "Tarde", fecha: "2025-04-23" },
-      //{ nombre: "Hno Jhon", turno: "Mañana", fecha: "2025-04-23" },
-      //### Esto es para Martes Y Jueves
       { nombre: "Hno Clemente", turno: "Martes", fecha: "2025-04-23" },
       { nombre: "Hno Jose Espinoza", turno: "Martes", fecha: "2025-04-23" },
       { nombre: "Hno Clemente", turno: "Jueves", fecha: "2025-04-25" },
@@ -161,9 +168,9 @@
           contenedorManana.appendChild(card);
         } else if (hermano.turno === "Tarde") {
           contenedorTarde.appendChild(card);
-        } else if (hermano.turno === "Martes") { // Para el turno Martes
+        } else if (hermano.turno === "Martes") {
           contenedorMartes.appendChild(card);
-        } else if (hermano.turno === "Jueves") { // Para el turno Jueves
+        } else if (hermano.turno === "Jueves") {
           contenedorJueves.appendChild(card);
         }
       });
@@ -178,13 +185,10 @@
         jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
       };
 
-      // Convertir el contenido de la página a PDF
       const element = document.body; // Exporta toda la página
-
-      // Aquí generamos el PDF y lo abrimos en una nueva ventana
       html2pdf().from(element).set(opciones).toPdf().get('pdf').then(function (pdf) {
-        const pdfUrl = pdf.output('bloburl'); // Crea una URL para el PDF generado
-        window.open(pdfUrl, '_blank'); // Abre el PDF en una nueva ventana
+        const pdfUrl = pdf.output('bloburl');
+        window.open(pdfUrl, '_blank');
       });
     }
   </script>
