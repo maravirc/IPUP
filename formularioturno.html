@@ -26,25 +26,21 @@
 
     .hermano-card {
       background-color: #ffffff;
-      padding: 25px; /* Aumentar el padding para más espacio dentro */
+      padding: 15px;
       border-radius: 8px;
       box-shadow: 0 4px 8px rgba(0,0,0,0.1);
       text-align: center;
-      width: 350px; /* Aumentar el tamaño en ancho */
-      max-width: 350px; /* Evitar que se estiren demasiado */
-      height: 250px; /* Ajustar altura */
+      width: 200px;
     }
 
     .hermano-card h3 {
       margin: 0;
       color: #333;
-      font-size: 22px; /* Aumentar tamaño de texto */
     }
 
     .hermano-card p {
       margin: 10px 0;
       color: #2a2b2a;
-      font-size: 16px; /* Aumentar tamaño de fuente */
     }
 
     .turno {
@@ -53,7 +49,7 @@
     }
 
     .fecha {
-      font-size: 16px;
+      font-size: 14px;
       color: #777;
     }
 
@@ -64,36 +60,25 @@
     .turno-container h3 {
       text-align: center;
       color: #27ae60;
-      font-size: 24px; /* Título más grande */
+      font-size: 18px;
       margin-bottom: 10px;
     }
 
     button {
       width: 100%;
       margin-top: 20px;
-      padding: 12px 20px; /* Aumentar padding */
+      padding: 10px 20px;
       background-color: #27ae60;
       color: white;
       border: none;
       border-radius: 6px;
-      font-size: 18px; /* Aumentar tamaño de texto */
+      font-size: 16px;
       cursor: pointer;
       transition: background-color 0.3s ease;
     }
 
     button:hover {
       background-color: #219150;
-    }
-
-    @media (max-width: 768px) {
-      .hermano-card {
-        width: 100%; /* En pantallas pequeñas, los cards ocupan todo el ancho */
-        max-width: 100%;
-      }
-
-      .turno-container h3 {
-        font-size: 18px; /* Reducir tamaño de título en pantallas pequeñas */
-      }
     }
   </style>
 </head>
@@ -121,6 +106,8 @@
     <div class="hermanos-container" id="hermanosTarde"></div>
   </div>
 
+ 
+
   <!-- Botón de exportación -->
   <button onclick="exportarPDF()">Exportar a PDF</button>
 
@@ -137,8 +124,13 @@
 
     // Lista actualizada de hermanos seleccionados con turnos Martes y Jueves incluidos
     const hermanosSeleccionados = [
+      //### Esto es para Domingos
+      //{ nombre: "Hno Alexander", turno: "Mañana", fecha: "2025-04-23" },
+      //{ nombre: "Hno Bitme", turno: "Tarde", fecha: "2025-04-23" },
+      //{ nombre: "Hno Jhon", turno: "Mañana", fecha: "2025-04-23" },
+      //### Esto es para Martes Y Jueves
       { nombre: "Hno Clemente", turno: "Martes", fecha: "2025-04-23" },
-      { nombre: "Hno Jose Espinoza", turno: "Martes", fecha: "2025-04-23" },
+      { nombre: "Hno Jose Espinoza", turno: "Martes", fecha: "2025-04-2" },
       { nombre: "Hno Clemente", turno: "Jueves", fecha: "2025-04-25" },
       { nombre: "Hno Jose Espinoza", turno: "Jueves", fecha: "2025-04-25" },
     ];
@@ -169,9 +161,9 @@
           contenedorManana.appendChild(card);
         } else if (hermano.turno === "Tarde") {
           contenedorTarde.appendChild(card);
-        } else if (hermano.turno === "Martes") {
+        } else if (hermano.turno === "Martes") { // Para el turno Martes
           contenedorMartes.appendChild(card);
-        } else if (hermano.turno === "Jueves") {
+        } else if (hermano.turno === "Jueves") { // Para el turno Jueves
           contenedorJueves.appendChild(card);
         }
       });
@@ -186,17 +178,19 @@
         jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
       };
 
+      // Convertir el contenido de la página a PDF
       const element = document.body; // Exporta toda la página
+
+      // Aquí generamos el PDF y lo abrimos en una nueva ventana
       html2pdf().from(element).set(opciones).toPdf().get('pdf').then(function (pdf) {
-        const pdfUrl = pdf.output('bloburl');
-        window.open(pdfUrl, '_blank');
+        const pdfUrl = pdf.output('bloburl'); // Crea una URL para el PDF generado
+        window.open(pdfUrl, '_blank'); // Abre el PDF en una nueva ventana
       });
     }
   </script>
 
 </body>
 </html>
-
 
 
 
