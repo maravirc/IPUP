@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Registro de Limpieza</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f4f6f8;
+      margin: 0;
+      padding: 20px;
+    }
+
+    h2 {
+      text-align: center;
+      color: #333;
+    }
+
+    .filtros, .registro {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 20px 0;
+      justify-content: center;
+    }
+
+    .filtros input, .filtros select, .registro input {
+      max-width: 200px;
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+
+    button {
+      padding: 10px 20px;
+      background-color: #27ae60;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #219150;
+    }
+
+    .tabla-responsive {
+      width: 100%;
+      overflow-x: auto;
+      overflow-y: auto;
+      max-height: 400px;
+      -webkit-overflow-scrolling: touch;
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+      margin-top: 20px;
+    }
+
+    table {
+      width: 100%;
+      min-width: 600px;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      padding: 12px 15px;
+      border-bottom: 1px solid #eee;
+      white-space: nowrap;
+    }
+
+    th {
+      background-color: #2c3e50;
+      color: white;
+      text-align: left;
+    }
+
+    tr:hover {
+      background-color: #f1f1f1;
+    }
+
+    input[type="text"], input[type="date"], select {
+      width: 100%;
+      padding: 6px 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+
+    .center {
+      text-align: center;
+    }
+
+    .limpieza-realizada {
+      font-weight: bold;
+    }
+
+    .limpieza-realizada.sí {
+      color: white;
+      background-color: #27ae60; /* Verde cuando se realiza limpieza */
+      padding: 5px;
+      border-radius: 4px;
+    }
+
+    .limpieza-realizada.no {
+      color: white;
+      background-color: #e74c3c; /* Rojo cuando no se realiza limpieza */
+      padding: 5px;
+      border-radius: 4px;
+    }
+
+    @media (max-width: 768px) {
+      body {
+        padding: 10px;
+      }
+
+      .filtros, .registro {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .filtros select, .filtros input, .registro input {
+        max-width: 100%;
+      }
+
+      table {
+        min-width: 600px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h2>Registro de Limpieza</h2>
+
+  <!-- Tabla -->
+  <div class="tabla-responsive">
+    <table>
+      <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>Fecha</th>
+          <th>Limpieza Realizada</th>
+          <th>Comentarios</th> <!-- Columna de Comentarios -->
+        </tr>
+      </thead>
+      <tbody id="tablaUsuarios"></tbody>
+    </table>
+  </div>
+
+  <button style="margin: 20px auto; display: block;" onclick="redirigirATurno()">🕒 Mostrar Horarios</button>
+
+  <script>
+    let usuarios = [
+      "Hno. Alexander", "Hno. Vitmer", "Hno. George Yonatan Soto Navarro", "Hno. Daniel",
+      "Hno. Edgar", "Hno. Blanca", "Hno. Adrian", "Hno. Jose", "Hno. Anderson", "Hno. John Pariona",
+      "Hno. Clemente", "Hna. Betty Rosado", "Hna. Gabriela", "Hno. Julian Samaritano",
+      "Hna. Hna. Elva", "Hna. Edid Santiago", "Hna. Edith Chinchay", "Hna. Jennifer Calderón",
+      "Hna. Karolyne Torres", "Hno. Marcial Avellaneda", "Hna. Milagros Guillén", "Hna. Mishell",
+      "Hno. Sergio Quiliche", "Hna. Geraldine", "Hna. Jhoana Trinidad", "Hna. Ingrid Samaritano",
+      "Hno. Eduardo", "Hno. Rene Puño Pariona", "Hna. Karen Ventura", "Hna. Lida Blas",
+      "Hna. Tessi Blas", "Hna. Reyna Caurino", "Hna. Marlene Estrada", "Hna. Erica",
+      "Hna. Mariela Encinas", "Hno. Jeisen Hilario", "Hno. Sergio Linarez", "Hna. Clara",
+      "Hna. Feliciana"
+    ];
+
+    // Fechas y limpieza predefinidos
+    let fechas = [
+      "2025-04-25", "2025-04-26", "2025-04-27", "2025-04-28", "2025-04-29", "2025-04-30",
+      "2025-05-01", "2025-05-02", "2025-05-03", "2025-05-04", "2025-05-05", "2025-05-06",
+      "2025-05-07", "2025-05-08", "2025-05-09", "2025-05-10", "2025-05-11", "2025-05-12",
+      "2025-05-13", "2025-05-14", "2025-05-15", "2025-05-16", "2025-05-17", "2025-05-18",
+      "2025-05-19", "2025-05-20", "2025-05-21", "2025-05-22", "2025-05-23", "2025-05-24",
+      "2025-05-25", "2025-05-26", "2025-05-27", "2025-05-28", "2025-05-29", "2025-05-30"
+    ];
+
+    let limpiezaRealizada = [
+      true, false, true, true, false, true, true, false, true, false, true, false,
+      true, true, false, true, true, false, true, true, false, true, true, false,
+      true, true, false, true, true, true, true, false, true, false
+    ];
+
+    let comentarios = [
+      "Hermano solo puede los domingos", "Hermano solo puede los domingos", "Hermano solo puede los domingos",
+      "Hermano solo puede los domingos", "Hermano solo puede los domingos", "Hermano solo puede los domingos",
+      "Hermano solo puede los domingos", "Hermano solo puede los domingos", "Hermano solo puede los domingos",
+      "Hermano solo puede los domingos", "Hermano solo puede los domingos", "Hermano solo puede los domingos",
+      "Hermano solo puede los domingos", "Hermano solo puede los domingos", "Hermano solo puede los domingos",
+      "Hermano solo puede los domingos", "Hermano solo puede los domingos", "Hermano solo puede los domingos",
+      "Hermano solo puede los domingos", "Hermano solo puede los domingos", "Hermano solo puede los domingos",
+      "Hermano solo puede los domingos", "Hermano solo puede los domingos", "Hermano solo puede los domingos",
+      "Hermano solo puede los domingos", "Hermano solo puede los domingos", "Hermano solo puede los domingos",
+      "Hermano solo puede los domingos", "Hermano solo puede los domingos", "Hermano solo puede los domingos",
+      "Hermano solo puede los domingos", "Hermano solo puede los domingos", "Hermano solo puede los domingos",
+      "Hermano solo puede los domingos", "Hermano solo puede los domingos", "Hermano solo puede los domingos",
+      "Hermano solo puede los domingos"
+    ];
+
+    function crearTabla() {
+      const tabla = document.getElementById("tablaUsuarios");
+      tabla.innerHTML = "";
+
+      usuarios.forEach((usuario, i) => {
+        const fila = document.createElement("tr");
+
+        fila.innerHTML = `
+          <td>
+            🖊️ <span>${usuario}</span>
+          </td>
+          <td><input type="text" value="${fechas[i]}" onchange="actualizarDato(${i}, 'fecha', this.value)"></td>
+          <td class="limpieza-realizada ${limpiezaRealizada[i] ? 'sí' : 'no'}">
+            ${limpiezaRealizada[i] ? 'Sí' : 'No'}
+          </td>
+          <td><input type="text" value="${comentarios[i]}" onchange="actualizarDato(${i}, 'comentarios', this.value)"></td>
+        `;
+        tabla.appendChild(fila);
+      });
+    }
+
+    function actualizarDato(index, campo, valor) {
+      if (campo === 'fecha') {
+        fechas[index] = valor;
+      } else if (campo === 'comentarios') {
+        comentarios[index] = valor;
+      }
+    }
+
+    // Cargar la tabla inicial
+    crearTabla();
+  </script>
+</body>
+</html>
+
