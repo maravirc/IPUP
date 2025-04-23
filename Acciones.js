@@ -1,6 +1,6 @@
 // Función para redirigir al formulario
 function redirigir() {
-    window.location.href = "Formulario2.html";
+    window.location.href = "Formulario5.html";
 }
 
 // Simulando progreso
