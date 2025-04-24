@@ -15,6 +15,54 @@
     h2 {
       text-align: center;
       color: #333;
+      margin-bottom: 10px;
+    }
+
+    /* Estilo para el contenedor del título y el botón */
+    .header-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      background-color: #fff;
+      padding: 10px 20px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      z-index: 10;
+    }
+
+    .header-container h2 {
+      margin: 0;
+      flex-grow: 1;
+      text-align: left;
+    }
+
+    .header-container button {
+      background-color: #3498db;
+      color: white;
+      padding: 10px 15px;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .header-container button:hover {
+      background-color: #2980b9;
+    }
+
+    /* Estilos para pantallas pequeñas (móviles) */
+    @media (max-width: 768px) {
+      .header-container {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .header-container button {
+        width: 100%;  /* El botón ocupa todo el ancho en dispositivos móviles */
+        margin-top: 10px; /* Separación con el título */
+      }
     }
 
     .hermanos-container {
@@ -84,10 +132,14 @@
 </head>
 <body>
 
-  <h2>Lista de Limpieza</h2>
+  <!-- Contenedor para el título y el botón -->
+  <div class="header-container">
+    <h2>Lista de Limpieza</h2>
+    <button onclick="window.location.href='formulario5.html';">Regresar</button>
+  </div>
 
   <!-- Contenedores para los turnos -->
-   <div class="turno-container" id="turnoMartes">
+  <div class="turno-container" id="turnoMartes">
     <h3>Turno Martes</h3>
     <div class="hermanos-container" id="hermanosMartes"></div>
   </div>
@@ -106,8 +158,6 @@
     <div class="hermanos-container" id="hermanosTarde"></div>
   </div>
 
- 
-
   <!-- Botón de exportación -->
   <button onclick="exportarPDF()">Exportar a PDF</button>
 
@@ -124,11 +174,6 @@
 
     // Lista actualizada de hermanos seleccionados con turnos Martes y Jueves incluidos
     const hermanosSeleccionados = [
-      //### Esto es para Domingos
-      //{ nombre: "Hno Alexander", turno: "Mañana", fecha: "2025-04-23" },
-      //{ nombre: "Hno Bitme", turno: "Tarde", fecha: "2025-04-23" },
-      //{ nombre: "Hno Jhon", turno: "Mañana", fecha: "2025-04-23" },
-      //### Esto es para Martes Y Jueves
       { nombre: "Hno Clemente", turno: "Martes", fecha: "2025-04-23" },
       { nombre: "Hno Jose Espinoza", turno: "Martes", fecha: "2025-04-2" },
       { nombre: "Hno Clemente", turno: "Jueves", fecha: "2025-04-25" },
@@ -191,7 +236,6 @@
 
 </body>
 </html>
-
 
 
 
