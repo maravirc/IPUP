@@ -3,8 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Turnos de Limpieza</title>
+  <title>Registro de Limpieza</title>
   <style>
+    * {
+      box-sizing: border-box;
+    }
+
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       background-color: #f4f6f8;
@@ -15,228 +19,280 @@
     h2 {
       text-align: center;
       color: #333;
-      margin-bottom: 10px;
     }
 
-    /* Estilo para el contenedor del título y el botón */
-    .header-container {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+    /* Fijar el contenedor de filtros, título y botón */
+    .header {
       position: sticky;
       top: 0;
       background-color: #fff;
-      padding: 10px 20px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
       z-index: 10;
+      padding: 10px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     }
 
-    .header-container h2 {
-      margin: 0;
-      flex-grow: 1;
-      text-align: left;
-    }
-
-    .header-container button {
-      background-color: #3498db;
-      color: white;
-      padding: 10px 15px;
-      border: none;
-      border-radius: 5px;
-      font-size: 16px;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-    }
-
-    .header-container button:hover {
-      background-color: #2980b9;
-    }
-
-    /* Estilos para pantallas pequeñas (móviles) */
-    @media (max-width: 768px) {
-      .header-container {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-
-      .header-container button {
-        width: 100%;  /* El botón ocupa todo el ancho en dispositivos móviles */
-        margin-top: 10px; /* Separación con el título */
-      }
-    }
-
-    .hermanos-container {
+    .filtros {
       display: flex;
-      flex-wrap: wrap;
-      gap: 20px;
-      justify-content: center;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
     }
 
-    .hermano-card {
-      background-color: #ffffff;
-      padding: 15px;
-      border-radius: 8px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-      text-align: center;
-      width: 200px;
-    }
-
-    .hermano-card h3 {
-      margin: 0;
-      color: #333;
-    }
-
-    .hermano-card p {
-      margin: 10px 0;
-      color: #2a2b2a;
-    }
-
-    .turno {
-      font-weight: bold;
-      color: #27ae60;
-    }
-
-    .fecha {
+    .filtros input {
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
       font-size: 14px;
-      color: #777;
+      width: 60%;
+      max-width: 300px;
     }
 
-    .turno-container {
-      margin-bottom: 30px;
-    }
-
-    .turno-container h3 {
-      text-align: center;
-      color: #27ae60;
-      font-size: 18px;
-      margin-bottom: 10px;
-    }
-
-    button {
-      width: 100%;
-      margin-top: 20px;
+    .filtros button {
       padding: 10px 20px;
       background-color: #27ae60;
       color: white;
       border: none;
       border-radius: 6px;
-      font-size: 16px;
+      font-size: 14px;
       cursor: pointer;
       transition: background-color 0.3s ease;
     }
 
-    button:hover {
+    .filtros button:hover {
       background-color: #219150;
+    }
+
+    .tabla-responsive {
+      width: 100%;
+      overflow-x: auto;
+      margin-top: 20px;
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+    }
+
+    .tabla-wrapper {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-start;
+      gap: 10px;
+    }
+
+    .hermano {
+      width: 100%;
+      max-width: 350px;
+      padding: 15px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      background-color: #fafafa;
+    }
+
+    .campo {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 10px;
+    }
+
+    .campo label {
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+
+    .campo input, .campo textarea {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+
+    textarea {
+      height: 80px; /* Suficiente altura para el comentario */
+      resize: vertical;
+    }
+
+    .limpieza-realizada {
+      font-weight: bold;
+      padding: 5px;
+      border-radius: 4px;
+    }
+
+    .limpieza-realizada.sí {
+      color: white;
+      background-color: #27ae60; /* Verde cuando se realiza limpieza */
+    }
+
+    .limpieza-realizada.no {
+      color: white;
+      background-color: #e74c3c; /* Rojo cuando no se realiza limpieza */
+    }
+
+    @media (max-width: 768px) {
+      body {
+        padding: 10px;
+      }
+
+      .tabla-wrapper {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .hermano {
+        width: 100%; /* Hace que cada div de hermano ocupe todo el ancho */
+      }
+
+      .campo {
+        max-width: 100%;
+      }
+
+      .filtros {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .filtros input {
+        width: 80%;
+        max-width: 100%;
+        margin-bottom: 10px;
+      }
     }
   </style>
 </head>
 <body>
+  <div class="header">
+    <h2>Registro de Limpieza</h2>
 
-  <!-- Contenedor para el título y el botón -->
-  <div class="header-container">
-    <h2>Lista de Limpieza</h2>
-    <button onclick="window.location.href='formularioturno.html';">Regresar</button>
+    <!-- Filtros -->
+    <div class="filtros">
+      <input type="text" id="buscarNombre" placeholder="Buscar por nombre..." oninput="filtrarNombres()">
+      <button onclick="redirigirATurno()">🕒 Mostrar Horarios</button>
+    </div>
   </div>
 
-  <!-- Contenedores para los turnos -->
-  <div class="turno-container" id="turnoMartes">
-    <h3>Turno Martes</h3>
-    <div class="hermanos-container" id="hermanosMartes"></div>
+  <!-- Contenedor para los campos de la tabla -->
+  <div class="tabla-responsive">
+    <div class="tabla-wrapper" id="tablaUsuarios"></div>
   </div>
-
-  <div class="turno-container" id="turnoJueves">
-    <h3>Turno Jueves</h3>
-    <div class="hermanos-container" id="hermanosJueves"></div>
-  </div>
-  <div class="turno-container" id="turnoManana">
-    <h3>Turno Domingo Mañana</h3>
-    <div class="hermanos-container" id="hermanosManana"></div>
-  </div>
-
-  <div class="turno-container" id="turnoTarde">
-    <h3>Turno Domingo Tarde</h3>
-    <div class="hermanos-container" id="hermanosTarde"></div>
-  </div>
-
-  <!-- Botón de exportación -->
-  <button onclick="exportarPDF()">Exportar a PDF</button>
-
-  <!-- Incluir html2pdf.js -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.js"></script>
 
   <script>
-    function formatearFechaBonita(fechaStr) {
-      const fecha = new Date(fechaStr);
-      const opciones = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
-      const fechaFormateada = fecha.toLocaleDateString('es-ES', opciones);
-      return fechaFormateada.charAt(0).toUpperCase() + fechaFormateada.slice(1);
-    }
-
-    // Lista actualizada de hermanos seleccionados con turnos Martes y Jueves incluidos
-    const hermanosSeleccionados = [
-      { nombre: "Hno Clemente", turno: "Martes", fecha: "2025-04-23" },
-      { nombre: "Hno Jose Espinoza", turno: "Martes", fecha: "2025-04-2" },
-      { nombre: "Hno Clemente", turno: "Jueves", fecha: "2025-04-25" },
-      { nombre: "Hno Jose Espinoza", turno: "Jueves", fecha: "2025-04-25" },
+    let usuarios = [
+      "Hno. Alexander", "Hno. Vitmer", "Hno. George Yonatan Soto Navarro", "Hno. Daniel",
+      "Hno. Edgar", "Hno. Blanca", "Hno. Adrian", "Hno. Jose", "Hno. Anderson", "Hno. John Pariona",
+      "Hno. Clemente", "Hna. Betty Rosado", "Hna. Gabriela", "Hno. Julian Samaritano",
+      "Hna. Hna. Elva", "Hna. Edid Santiago", "Hna. Edith Chinchay", "Hna. Jennifer Calderón",
+      "Hna. Karolyne Torres", "Hno. Marcial Avellaneda", "Hna. Milagros Guillén", "Hna. Mishell",
+      "Hno. Sergio Quiliche", "Hna. Geraldine", "Hna. Jhoana Trinidad", "Hna. Ingrid Samaritano",
+      "Hno. Eduardo", "Hno. Rene Puño Pariona", "Hna. Karen Ventura", "Hna. Lida Blas",
+      "Hna. Tessi Blas", "Hna. Reyna Caurino", "Hna. Marlene Estrada", "Hna. Erica",
+      "Hna. Mariela Encinas", "Hno. Jeisen Hilario", "Hno. Sergio Linarez", "Hna. Clara",
+      "Hna. Feliciana"
     ];
 
-    // Contenedores para los turnos
-    const contenedorManana = document.getElementById("hermanosManana");
-    const contenedorTarde = document.getElementById("hermanosTarde");
-    const contenedorMartes = document.getElementById("hermanosMartes");
-    const contenedorJueves = document.getElementById("hermanosJueves");
+    let fechas = [
+      "2025-04-25", "2025-04-26", "2025-04-27", "2025-04-28", "2025-04-29", "2025-04-30",
+      "2025-05-01", "2025-05-02", "2025-05-03", "2025-05-04", "2025-05-05", "2025-05-06",
+      "2025-05-07", "2025-05-08", "2025-05-09", "2025-05-10", "2025-05-11", "2025-05-12",
+      "2025-05-13", "2025-05-14", "2025-05-15", "2025-05-16", "2025-05-17", "2025-05-18",
+      "2025-05-19", "2025-05-20", "2025-05-21", "2025-05-22", "2025-05-23", "2025-05-24",
+      "2025-05-25", "2025-05-26", "2025-05-27", "2025-05-28", "2025-05-29", "2025-05-30"
+    ];
 
-    // Verificar si existen hermanos seleccionados
-    if (!hermanosSeleccionados || hermanosSeleccionados.length === 0) {
-      document.getElementById("hermanosContainer").innerHTML = "<p>No hay hermanos seleccionados para los turnos.</p>";
-    } else {
-      // Separar hermanos por turno
-      hermanosSeleccionados.forEach(hermano => {
-        const card = document.createElement("div");
-        card.classList.add("hermano-card");
+    let limpiezaRealizada = [
+      false, false, true, true, false, true, true, false, true, false, true, false,
+      true, true, false, true, true, false, true, true, false, true, true, false,
+      true, true, false, true, true, true, true, false, true, false
+    ];
 
-        card.innerHTML = `
-          <h3>${hermano.nombre}</h3>
-          <p class="turno">${hermano.turno}</p>
-          <p class="fecha">${formatearFechaBonita(hermano.fecha)}</p>
+    let comentarios = [
+      "Hermano solo puede los domingos", "Hermano solo puede los domingos", "Hermano solo puede los domingos",
+      "Hermano solo puede los domingos", "Hermano solo puede los domingos", "Hermano solo puede los domingos",
+      "Hermano solo puede los domingos", "Hermano solo puede los domingos", "Hermano solo puede los domingos",
+      "Hermano solo puede los domingos", "Hermano solo puede los domingos", "Hermano solo puede los domingos",
+      "Hermano solo puede los domingos", "Hermano solo puede los domingos", "Hermano solo puede los domingos",
+      "Hermano solo puede los domingos", "Hermano solo puede los domingos", "Hermano solo puede los domingos",
+      "Hermano solo puede los domingos", "Hermano solo puede los domingos", "Hermano solo puede los domingos",
+      "Hermano solo puede los domingos", "Hermano solo puede los domingos", "Hermano solo puede los domingos",
+      "Hermano solo puede los domingos", "Hermano solo puede los domingos", "Hermano solo puede los domingos",
+      "Hermano solo puede los domingos", "Hermano solo puede los domingos", "Hermano solo puede los domingos",
+      "Hermano solo puede los domingos", "Hermano solo puede los domingos", "Hermano solo puede los domingos",
+      "Hermano solo puede los domingos", "Hermano solo puede los domingos", "Hermano solo puede los domingos",
+      "Hermano solo puede los domingos"
+    ];
+
+    function crearTabla() {
+      const tabla = document.getElementById("tablaUsuarios");
+      tabla.innerHTML = "";
+
+      usuarios.forEach((usuario, i) => {
+        const hermanoDiv = document.createElement("div");
+        hermanoDiv.classList.add("hermano");
+
+        hermanoDiv.innerHTML = `
+          <div class="campo">
+            <label>Nombre:</label>
+            <span>${usuario}</span>
+          </div>
+          <div class="campo">
+            <label>Fecha:</label>
+            <input type="text" value="${fechas[i]}" onchange="actualizarDato(${i}, 'fecha', this.value)">
+          </div>
+          <div class="campo">
+            <label>Limpieza Realizada:</label>
+            <div class="limpieza-realizada ${limpiezaRealizada[i] ? 'sí' : 'no'}">
+              ${limpiezaRealizada[i] ? 'Sí' : 'No'}
+            </div>
+          </div>
+          <div class="campo comentarios">
+            <label>Comentarios:</label>
+            <textarea onchange="actualizarDato(${i}, 'comentarios', this.value)">${comentarios[i]}</textarea>
+          </div>
         `;
+        
+        tabla.appendChild(hermanoDiv);
+      });
+    }
 
-        // Mostrar el hermano en el turno correspondiente
-        if (hermano.turno === "Mañana") {
-          contenedorManana.appendChild(card);
-        } else if (hermano.turno === "Tarde") {
-          contenedorTarde.appendChild(card);
-        } else if (hermano.turno === "Martes") { // Para el turno Martes
-          contenedorMartes.appendChild(card);
-        } else if (hermano.turno === "Jueves") { // Para el turno Jueves
-          contenedorJueves.appendChild(card);
+    function actualizarDato(index, campo, valor) {
+      if (campo === 'fecha') {
+        fechas[index] = valor;
+      } else if (campo === 'comentarios') {
+        comentarios[index] = valor;
+      }
+    }
+
+    function filtrarNombres() {
+      const filtro = document.getElementById('buscarNombre').value.toLowerCase();
+      const tabla = document.getElementById("tablaUsuarios");
+      const hermanos = tabla.getElementsByClassName('hermano');
+      
+      Array.from(hermanos).forEach(hermanoDiv => {
+        const nombre = hermanoDiv.querySelector('span').textContent.toLowerCase();
+        if (nombre.includes(filtro)) {
+          hermanoDiv.style.display = "";
+        } else {
+          hermanoDiv.style.display = "none";
         }
       });
     }
 
-    // Función para exportar a PDF y abrirlo en una nueva ventana del navegador
-    function exportarPDF() {
-      const opciones = {
-        margin:       1,
-        filename:     'turnos_limpieza.pdf',
-        html2canvas:  { scale: 2 },
-        jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
-      };
-
-      // Convertir el contenido de la página a PDF
-      const element = document.body; // Exporta toda la página
-
-      // Aquí generamos el PDF y lo abrimos en una nueva ventana
-      html2pdf().from(element).set(opciones).toPdf().get('pdf').then(function (pdf) {
-        const pdfUrl = pdf.output('bloburl'); // Crea una URL para el PDF generado
-        window.open(pdfUrl, '_blank'); // Abre el PDF en una nueva ventana
-      });
+    function redirigirATurno() {
+      // Aquí puedes agregar la lógica de redirección a la página de horarios
+      alert('Redirigiendo a la página de horarios...');
     }
-  </script>
 
+    // Cargar la tabla inicial
+    crearTabla();
+
+
+  function redirigirATurno() {
+    // Redirige al usuario al archivo 'formularioturno.html'
+    window.location.href = 'formularioturno.html';
+  }
+
+  </script>
 </body>
 </html>
-
 
 
 
