@@ -21,7 +21,7 @@
     /* Estilo para el contenedor del título y el botón */
     .header-container {
       display: flex;
-      justify-content: space-between;
+      flex-direction: column;
       align-items: center;
       position: sticky;
       top: 0;
@@ -46,6 +46,9 @@
       font-size: 16px;
       cursor: pointer;
       transition: background-color 0.3s ease;
+      width: 100%; /* El botón ocupará el 100% del ancho */
+      max-width: 200px; /* Limitar el ancho máximo */
+      margin-top: 10px; /* Separación con el título */
     }
 
     .header-container button:hover {
@@ -55,13 +58,23 @@
     /* Estilos para pantallas pequeñas (móviles) */
     @media (max-width: 768px) {
       .header-container {
-        flex-direction: column;
-        align-items: flex-start;
+        align-items: center;
       }
 
       .header-container button {
         width: 100%;  /* El botón ocupa todo el ancho en dispositivos móviles */
-        margin-top: 10px; /* Separación con el título */
+      }
+    }
+
+    /* Estilos para pantallas grandes (computadoras de escritorio) */
+    @media (min-width: 769px) {
+      .header-container {
+        align-items: center;
+      }
+
+      .header-container button {
+        width: 100%; /* El botón ocupa todo el ancho, pero no es necesario usar justify-content */
+        max-width: 200px; /* Limitar el ancho máximo del botón */
       }
     }
 
@@ -236,6 +249,5 @@
 
 </body>
 </html>
-
 
 
