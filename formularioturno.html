@@ -148,7 +148,7 @@
   <!-- Contenedor para el título y el botón -->
   <div class="header-container">
     <h2>Lista de Limpieza</h2>
-    <button onclick="window.location.href='Formulario5.html';">Regresar</button>
+    <button onclick="redirigirFormulario5()">Regresar</button>
   </div>
 
   <!-- Contenedores para los turnos -->
@@ -245,9 +245,12 @@
         window.open(pdfUrl, '_blank'); // Abre el PDF en una nueva ventana
       });
     }
+     function redirigirFormulario5() {
+    // Redirige al usuario al archivo 'formularioturno.html'
+    window.location.href = 'Formulario5.html';
+  }
   </script>
 
 </body>
 </html>
-
 
