@@ -128,57 +128,35 @@
       background-color: #e74c3c; /* Rojo cuando no se realiza limpieza */
     }
 
-    /* Estilos para dispositivos móviles */
-    @media (max-width: 768px) {
-      body {
-        padding: 10px;
-      }
+    /* Estilos para dispositivos móviles y de escritorio */
+    .btn-flotante {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background-color: #27ae60;
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 60px;
+      height: 60px;
+      font-size: 20px;
+      text-align: center;
+      line-height: 60px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      cursor: pointer;
+      z-index: 100;
+    }
 
-      .tabla-wrapper {
-        flex-direction: column;
-        align-items: center;
-      }
+    .btn-flotante:hover {
+      background-color: #219150;
+    }
 
-      .hermano {
-        width: 100%; /* Hace que cada div de hermano ocupe todo el ancho */
-      }
-
-      .campo {
-        max-width: 100%;
-      }
-
-      .filtros {
-        flex-direction: column;
-        align-items: center;
-      }
-
-      .filtros input {
-        width: 80%;
-        max-width: 100%;
-        margin-bottom: 10px;
-      }
-
-      /* Estilo para el botón flotante en móviles */
+    /* En pantallas grandes, aumentar tamaño del botón */
+    @media (min-width: 768px) {
       .btn-flotante {
-        position: fixed;
-        bottom: 20px;
-        right: 20px;
-        background-color: #27ae60;
-        color: white;
-        border: none;
-        border-radius: 50%;
-        width: 60px;
-        height: 60px;
-        font-size: 20px;
-        text-align: center;
-        line-height: 60px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        cursor: pointer;
-        z-index: 100;
-      }
-
-      .btn-flotante:hover {
-        background-color: #219150;
+        width: 80px;
+        height: 80px;
+        font-size: 30px;
       }
     }
   </style>
@@ -200,7 +178,7 @@
     <div class="tabla-wrapper" id="tablaUsuarios"></div>
   </div>
 
-  <!-- Botón flotante para móviles -->
+  <!-- Botón flotante para dispositivos de escritorio y móviles -->
   <button class="btn-flotante" onclick="redirigirAInicio()">🏠</button>
 
   <script>
@@ -314,12 +292,13 @@
 
     function redirigirATurno() {
       // Redirige al usuario al archivo 'formularioturno.html'
-      window.location.href = 'formularioturno.html';
+      window.location.href = 'Formulario4.html';
     }
 
   </script>
 </body>
 </html>
+
 
 
 
