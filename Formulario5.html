@@ -21,7 +21,6 @@
       color: #333;
     }
 
-    /* Fijar el contenedor de filtros, título y botón */
     .header {
       position: sticky;
       top: 0;
@@ -108,7 +107,7 @@
     }
 
     textarea {
-      height: 80px; /* Suficiente altura para el comentario */
+      height: 80px;
       resize: vertical;
     }
 
@@ -120,43 +119,89 @@
 
     .limpieza-realizada.sí {
       color: white;
-      background-color: #27ae60; /* Verde cuando se realiza limpieza */
+      background-color: #27ae60;
     }
 
     .limpieza-realizada.no {
       color: white;
-      background-color: #e74c3c; /* Rojo cuando no se realiza limpieza */
+      background-color: #e74c3c;
     }
 
-    /* Estilos para dispositivos móviles y de escritorio */
-    .btn-flotante {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      background-color: #27ae60;
-      color: white;
-      border: none;
-      border-radius: 50%;
-      width: 60px;
-      height: 60px;
-      font-size: 20px;
-      text-align: center;
-      line-height: 60px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-      cursor: pointer;
-      z-index: 100;
-    }
+    /* Estilos para dispositivos móviles */
+    @media (max-width: 768px) {
+      body {
+        padding: 10px;
+      }
 
-    .btn-flotante:hover {
-      background-color: #219150;
-    }
+      .tabla-wrapper {
+        flex-direction: column;
+        align-items: center;
+      }
 
-    /* En pantallas grandes, aumentar tamaño del botón */
-    @media (min-width: 768px) {
+      .hermano {
+        width: 100%;
+      }
+
+      .campo {
+        max-width: 100%;
+      }
+
+      .filtros {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .filtros input {
+        width: 80%;
+        max-width: 100%;
+        margin-bottom: 10px;
+      }
+
       .btn-flotante {
-        width: 80px;
-        height: 80px;
-        font-size: 30px;
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background-color: #27ae60;
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 60px;
+        height: 60px;
+        font-size: 20px;
+        text-align: center;
+        line-height: 60px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        cursor: pointer;
+        z-index: 100;
+      }
+
+      .btn-flotante:hover {
+        background-color: #219150;
+      }
+    }
+
+    /* Para computadoras de escritorio: mostrar el botón flotante también */
+    @media (min-width: 769px) {
+      .btn-flotante {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background-color: #27ae60;
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 60px;
+        height: 60px;
+        font-size: 20px;
+        text-align: center;
+        line-height: 60px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        cursor: pointer;
+        z-index: 100;
+      }
+
+      .btn-flotante:hover {
+        background-color: #219150;
       }
     }
   </style>
@@ -178,7 +223,7 @@
     <div class="tabla-wrapper" id="tablaUsuarios"></div>
   </div>
 
-  <!-- Botón flotante para dispositivos de escritorio y móviles -->
+  <!-- Botón flotante para computadoras y móviles -->
   <button class="btn-flotante" onclick="redirigirAInicio()">🏠</button>
 
   <script>
@@ -282,22 +327,20 @@
       });
     }
 
-    // Función de redirección al inicio (botón flotante)
     function redirigirAInicio() {
-      window.location.href = 'index.html'; // Cambia esta URL al inicio de tu página
+      window.location.href = 'index.html';
+    }
+
+    function redirigirATurno() {
+      window.location.href = 'formularioturno.html';
     }
 
     // Cargar la tabla inicial
     crearTabla();
-
-    function redirigirATurno() {
-      // Redirige al usuario al archivo 'formularioturno.html'
-      window.location.href = 'formularioturno.html';
-    }
-
   </script>
 </body>
 </html>
+
 
 
 
