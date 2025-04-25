@@ -141,6 +141,14 @@
     button:hover {
       background-color: #219150;
     }
+
+    .texto-biblico {
+      text-align: center;
+      margin-top: 10px;
+      font-size: 18px;
+      color: #555;
+      font-style: italic;
+    }
   </style>
 </head>
 <body>
@@ -149,6 +157,10 @@
   <div class="header-container">
     <h2>Lista de Limpieza</h2>
     <button onclick="redirigirFormulario5()">Regresar</button>
+    <!-- Texto bíblico debajo del botón "Regresar" -->
+    <div class="texto-biblico">
+      <p>"Pero los que esperan a Jehová tendrán nuevas fuerzas; levantarán alas como las águilas; correrán, y no se cansarán; caminarán, y no se fatigarán." - <strong>Isaías 40:31</strong></p>
+    </div>
   </div>
 
   <!-- Contenedores para los turnos -->
@@ -187,10 +199,15 @@
 
     // Lista actualizada de hermanos seleccionados con turnos Martes y Jueves incluidos
     const hermanosSeleccionados = [
-      { nombre: "Hno Clemente", turno: "Martes", fecha: "2025-04-23" },
-      { nombre: "Hno Jose Espinoza", turno: "Martes", fecha: "2025-04-2" },
-      { nombre: "Hno Clemente", turno: "Jueves", fecha: "2025-04-25" },
-      { nombre: "Hno Jose Espinoza", turno: "Jueves", fecha: "2025-04-25" },
+      { nombre: "Hno Clemente", turno: "Martes", fecha: "2025-04-30" },
+      { nombre: "Hno Jose Espinoza", turno: "Martes", fecha: "2025-04-30" },
+      { nombre: "Hno Clemente", turno: "Jueves", fecha: "2025-05-02" },
+      { nombre: "Hno Jose Espinoza", turno: "Jueves", fecha: "2025-05-02" },
+      // Turnos Domingo Mañana y Tarde para Pariona y Samaritano
+      { nombre: "Hno Pariona", turno: "Domingo Mañana", fecha: "2025-05-05" },
+      { nombre: "Hno Pariona", turno: "Domingo Tarde", fecha: "2025-05-05" },
+      { nombre: "Hno Samaritano", turno: "Domingo Mañana", fecha: "2025-05-05" },
+      { nombre: "Hno Samaritano", turno: "Domingo Tarde", fecha: "2025-05-05" }
     ];
 
     // Contenedores para los turnos
@@ -215,9 +232,9 @@
         `;
 
         // Mostrar el hermano en el turno correspondiente
-        if (hermano.turno === "Mañana") {
+        if (hermano.turno === "Domingo Mañana") {
           contenedorManana.appendChild(card);
-        } else if (hermano.turno === "Tarde") {
+        } else if (hermano.turno === "Domingo Tarde") {
           contenedorTarde.appendChild(card);
         } else if (hermano.turno === "Martes") { // Para el turno Martes
           contenedorMartes.appendChild(card);
@@ -245,10 +262,11 @@
         window.open(pdfUrl, '_blank'); // Abre el PDF en una nueva ventana
       });
     }
-     function redirigirFormulario5() {
-    // Redirige al usuario al archivo 'formularioturno.html'
-    window.location.href = 'Formulario5.html';
-  }
+    
+    function redirigirFormulario5() {
+      // Redirige al usuario al archivo 'formularioturno.html'
+      window.location.href = 'Formulario5.html';
+    }
   </script>
 
 </body>
