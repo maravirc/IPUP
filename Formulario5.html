@@ -227,49 +227,43 @@
   <button class="btn-flotante" onclick="redirigirAInicio()">🏠</button>
 
   <script>
-    let usuarios = [
-      "Hno. Alexander", "Hno. Vitmer", "Hno. George Yonatan Soto Navarro", "Hno. Daniel",
-      "Hno. Edgar", "Hno. Blanca", "Hno. Adrian", "Hno. Jose", "Hno. Anderson", "Hno. John Pariona",
-      "Hno. Clemente", "Hna. Betty Rosado", "Hna. Gabriela", "Hno. Julian Samaritano",
-      "Hna. Hna. Elva", "Hna. Edid Santiago", "Hna. Edith Chinchay", "Hna. Jennifer Calderón",
-      "Hna. Karolyne Torres", "Hno. Marcial Avellaneda", "Hna. Milagros Guillén", "Hna. Mishell",
-      "Hno. Sergio Quiliche", "Hna. Geraldine", "Hna. Jhoana Trinidad", "Hna. Ingrid Samaritano",
-      "Hno. Eduardo", "Hno. Rene Puño Pariona", "Hna. Karen Ventura", "Hna. Lida Blas",
-      "Hna. Tessi Blas", "Hna. Reyna Caurino", "Hna. Marlene Estrada", "Hna. Erica",
-      "Hna. Mariela Encinas", "Hno. Jeisen Hilario", "Hno. Sergio Linarez", "Hna. Clara",
-      "Hna. Feliciana"
-    ];
+  let usuarios = [
+  "Hno. Alexander Rengifo", "Hno. Vitmer", "Hno. George Yonatan Soto Navarro", "Hno. Daniel",
+  "Hno. Edgar Calderón", "Hno. Blanca", "Hno. Adrian Blas", "Hno. Jose Espinoza", "Hno. Anderson", "Hno. John Pariona",
+  "Hno. Clemente", "Hna. Betty Rosado", "Hna. Gabriela", "Hno. Julian Samaritano",
+  "Hna. Hna. Elva", "Hna. Edid Santiago", "Hna. Edith Chinchay", "Hna. Jennifer Calderón",
+  "Hna. Karolyne Torres", "Hno. Marcial Avellaneda", "Hna. Milagros Guillén", "Hna. Mishell",
+  "Hno. Sergio Quiliche", "Hna. Geraldine", "Hna. Jhoana Trinidad", "Hna. Ingrid Samaritano",
+  "Hno. Eduardo", "Hno. Rene Puño Pariona", "Hna. Karen Ventura", "Hna. Lida Blas",
+  "Hna. Tessi Blas", "Hna. Reyna Caurino", "Hna. Marlene Estrada", "Hna. Erica",
+  "Hna. Mariela Encinas", "Hno. Jeisen Hilario", "Hno. Sergio Linarez", "Hna. Clara",
+  "Hna. Feliciana", "Hno. Faustino Linares", "Hno. Gloría Rodríguez", "Hno. Victoria Colonia",
+  "Hno. Eli Timoteo", "Hno. Jeni Correa", "Hno. Yara Capinoa"
+];
 
-    let fechas = [
-      "2025-04-25", "2025-04-26", "2025-04-27", "2025-04-28", "2025-04-29", "2025-04-30",
-      "2025-05-01", "2025-05-02", "2025-05-03", "2025-05-04", "2025-05-05", "2025-05-06",
-      "2025-05-07", "2025-05-08", "2025-05-09", "2025-05-10", "2025-05-11", "2025-05-12",
-      "2025-05-13", "2025-05-14", "2025-05-15", "2025-05-16", "2025-05-17", "2025-05-18",
-      "2025-05-19", "2025-05-20", "2025-05-21", "2025-05-22", "2025-05-23", "2025-05-24",
-      "2025-05-25", "2025-05-26", "2025-05-27", "2025-05-28", "2025-05-29", "2025-05-30"
-    ];
+let fechas = [
+  "2025-04-25", "2025-04-26", "2025-04-27", "2025-04-28", "2025-04-29", "2025-04-30",
+  "2025-05-01", "2025-05-02", "2025-05-03", "2025-05-04", "2025-05-05", "2025-05-06",
+  "2025-05-07", "2025-05-08", "2025-05-09", "2025-05-10", "2025-05-11", "2025-05-12",
+  "2025-05-13", "2025-05-14", "2025-05-15", "2025-05-16", "2025-05-17", "2025-05-18",
+  "2025-05-19", "2025-05-20", "2025-05-21", "2025-05-22", "2025-05-23", "2025-05-24",
+  "2025-05-25", "2025-05-26", "2025-05-27", "2025-05-28", "2025-05-29", "2025-05-30",
+  "2025-06-01", "2025-06-02", "2025-06-03","2025-06-01", "2025-06-02", "2025-06-03",
+  "2025-06-01", "2025-06-02", "2025-06-03"
+];
 
     let limpiezaRealizada = [
-      false, false, true, true, false, true, true, false, true, false, true, false,
-      true, true, false, true, true, false, true, true, false, true, true, false,
-      true, true, false, true, true, true, true, false, true, false
-    ];
+  false, false, false, false, false, false, false, false, false, false, false, false,
+  false, false, false, false, false, false, false, false, false, false, false, false,
+  false, false, false, false, false, false, false, false, false, false, false, false,
+  false, false, false, false, false, false, false
+];
 
-    let comentarios = [
-      "Hermano solo puede los domingos", "Hermano solo puede los domingos", "Hermano solo puede los domingos",
-      "Hermano solo puede los domingos", "Hermano solo puede los domingos", "Hermano solo puede los domingos",
-      "Hermano solo puede los domingos", "Hermano solo puede los domingos", "Hermano solo puede los domingos",
-      "Hermano solo puede los domingos", "Hermano solo puede los domingos", "Hermano solo puede los domingos",
-      "Hermano solo puede los domingos", "Hermano solo puede los domingos", "Hermano solo puede los domingos",
-      "Hermano solo puede los domingos", "Hermano solo puede los domingos", "Hermano solo puede los domingos",
-      "Hermano solo puede los domingos", "Hermano solo puede los domingos", "Hermano solo puede los domingos",
-      "Hermano solo puede los domingos", "Hermano solo puede los domingos", "Hermano solo puede los domingos",
-      "Hermano solo puede los domingos", "Hermano solo puede los domingos", "Hermano solo puede los domingos",
-      "Hermano solo puede los domingos", "Hermano solo puede los domingos", "Hermano solo puede los domingos",
-      "Hermano solo puede los domingos", "Hermano solo puede los domingos", "Hermano solo puede los domingos",
-      "Hermano solo puede los domingos", "Hermano solo puede los domingos", "Hermano solo puede los domingos",
-      "Hermano solo puede los domingos"
-    ];
+
+let comentarios = [
+  "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",""
+];
+
 
     function crearTabla() {
       const tabla = document.getElementById("tablaUsuarios");
@@ -340,6 +334,7 @@
   </script>
 </body>
 </html>
+
 
 
 
