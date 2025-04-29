@@ -85,6 +85,16 @@
       border-radius: 8px;
       margin-bottom: 20px;
       background-color: #fafafa;
+      position: relative; /* Para posicionar el número en la esquina */
+    }
+
+    .numero {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      font-size: 18px;
+      font-weight: bold;
+      color: #333;
     }
 
     .campo {
@@ -228,110 +238,108 @@
 
   <script>
   let usuarios = [
-  "Hno. Alexander Rengifo", "Hno. Vitmer", "Hno. George Yonatan Soto Navarro", "Hno. Daniel",
-  "Hno. Edgar Calderón", "Hno. Blanca", "Hno. Adrian Blas", "Hno. Jose Espinoza", "Hno. Anderson", "Hno. John Pariona",
-  "Hno. Clemente", "Hna. Betty Rosado", "Hna. Gabriela", "Hno. Julian Samaritano",
-  "Hna. Hna. Elva", "Hna. Edid Santiago", "Hna. Edith Chinchay", "Hna. Jennifer Calderón",
-  "Hna. Karolyne Torres", "Hno. Marcial Avellaneda", "Hna. Milagros Guillén", "Hna. Mishell",
-  "Hno. Sergio Quiliche", "Hna. Geraldine", "Hna. Jhoana Trinidad", "Hna. Ingrid Samaritano",
-  "Hno. Eduardo", "Hno. Rene Puño Pariona", "Hna. Karen Ventura", "Hna. Lida Blas",
-  "Hna. Tessi Blas", "Hna. Reyna Caurino", "Hna. Marlene Estrada", "Hna. Erika",
-  "Hna. Mariela Encinas", "Hno. Jeisen Hilario", "Hno. Sergio Linarez", "Hna. Clara",
-  "Hna. Feliciana", "Hno. Faustino Linares", "Hno. Gloría Rodríguez", "Hno. Victoria Colonia",
-  "Hno. Eli Timoteo", "Hno. Jeni Correa", "Hno. Yara Capinoa"
-];
+    "Hno. Alexander Rengifo", "Hno. Vitmer", "Hno. George Yonatan Soto Navarro", "Hno. Daniel",
+    "Hno. Edgar Calderón", "Hno. Blanca", "Hno. Adrian Blas", "Hno. Jose Espinoza", "Hno. Anderson", "Hno. John Pariona",
+    "Hno. Clemente", "Hna. Betty Rosado", "Hna. Gabriela", "Hno. Julian Samaritano",
+    "Hna. Hna. Elva", "Hna. Edid Santiago", "Hna. Edith Chinchay", "Hna. Jennifer Calderón",
+    "Hna. Karolyne Torres", "Hno. Marcial Avellaneda", "Hna. Milagros Guillén", "Hna. Mishell",
+    "Hno. Sergio Quiliche", "Hna. Geraldine", "Hna. Jhoana Trinidad", "Hna. Ingrid Samaritano",
+    "Hno. Eduardo", "Hno. Rene Puño Pariona", "Hna. Karen Ventura", "Hna. Lida Blas",
+    "Hna. Tessi Blas", "Hna. Reyna Caurino", "Hna. Marlene Estrada", "Hna. Erica",
+    "Hna. Mariela Encinas", "Hno. Jeisen Hilario", "Hno. Sergio Linarez", "Hna. Clara",
+    "Hna. Feliciana", "Hno. Faustino Linares", "Hno. Gloría Rodríguez", "Hno. Victoria Colonia",
+    "Hno. Eli Timoteo", "Hno. Jeni Correa", "Hno. Yara Capinoa"
+  ];
 
-let fechas = [
-"2025-0-0", "2025-0-0", "2025-0-0", "2025-0-0", "2025-0-0", "2025-0-0",
-"2025-0-0", "2025-0-0", "2025-0-0", "2025-0-0", "2025-0-0", "2025-0-0",
-"2025-0-0", "2025-0-0", "2025-0-0", "2025-0-0", "2025-0-0", "2025-0-0",
-"2025-0-0", "2025-0-0", "2025-0-0", "2025-0-0", "2025-0-0", "2025-0-0",
-"2025-0-0", "2025-0-0", "2025-0-0", "2025-0-0", "2025-0-0", "2025-0-0",
-"2025-0-0", "2025-0-0", "2025-0-0", "2025-0-0", "2025-0-0", "2025-0-0",
-"2025-0-0", "2025-0-0", "2025-0-0", "2025-0-0", "2025-0-0", "2025-0-0",
-"2025-0-0", "2025-0-0", "2025-0-0"
+  let fechas = [
+    "2025-04-25", "2025-04-26", "2025-04-27", "2025-04-28", "2025-04-29", "2025-04-30",
+    "2025-05-01", "2025-05-02", "2025-05-03", "2025-05-04", "2025-05-05", "2025-05-06",
+    "2025-05-07", "2025-05-08", "2025-05-09", "2025-05-10", "2025-05-11", "2025-05-12",
+    "2025-05-13", "2025-05-14", "2025-05-15", "2025-05-16", "2025-05-17", "2025-05-18",
+    "2025-05-19", "2025-05-20", "2025-05-21", "2025-05-22", "2025-05-23", "2025-05-24",
+    "2025-05-25", "2025-05-26", "2025-05-27", "2025-05-28", "2025-05-29", "2025-05-30",
+    "2025-06-01", "2025-06-02", "2025-06-03","2025-06-01", "2025-06-02", "2025-06-03",
+    "2025-06-01", "2025-06-02", "2025-06-03"
+  ];
 
-];
+  let limpiezaRealizada = [
+    false, false, false, false, false, false, false, false, false, false, false, false,
+    false, false, false, false, false, false, false, false, false, false, false, false,
+    false, false, false, false, false, false, false, false, false, false, false, false,
+    false, false, false, false, false, false, false
+  ];
 
-    let limpiezaRealizada = [
-  false, false, false, false, false, false, false, false, false, false, false, false,
-  false, false, false, false, false, false, false, false, false, false, false, false,
-  false, false, false, false, false, false, false, false, false, false, false, false,
-  false, false, false, false, false, false, false
-];
+  let comentarios = [
+    "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "Domingos en la mañana", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",""
+  ];
 
+  function crearTabla() {
+    const tabla = document.getElementById("tablaUsuarios");
+    tabla.innerHTML = "";
 
-let comentarios = [
-  "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "Domingos en la mañana", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",""
-];
+    usuarios.forEach((usuario, i) => {
+      const hermanoDiv = document.createElement("div");
+      hermanoDiv.classList.add("hermano");
 
-
-    function crearTabla() {
-      const tabla = document.getElementById("tablaUsuarios");
-      tabla.innerHTML = "";
-
-      usuarios.forEach((usuario, i) => {
-        const hermanoDiv = document.createElement("div");
-        hermanoDiv.classList.add("hermano");
-
-        hermanoDiv.innerHTML = `
-          <div class="campo">
-            <label>Nombre:</label>
-            <span>${usuario}</span>
+      hermanoDiv.innerHTML = `
+        <div class="numero">${i + 1}</div>
+        <div class="campo">
+          <label>Nombre:</label>
+          <span>${usuario}</span>
+        </div>
+        <div class="campo">
+          <label>Fecha:</label>
+          <input type="text" value="${fechas[i]}" onchange="actualizarDato(${i}, 'fecha', this.value)">
+        </div>
+        <div class="campo">
+          <label>Limpieza Realizada:</label>
+          <div class="limpieza-realizada ${limpiezaRealizada[i] ? 'sí' : 'no'}">
+            ${limpiezaRealizada[i] ? 'Sí' : 'No'}
           </div>
-          <div class="campo">
-            <label>Fecha:</label>
-            <input type="text" value="${fechas[i]}" onchange="actualizarDato(${i}, 'fecha', this.value)">
-          </div>
-          <div class="campo">
-            <label>Limpieza Realizada:</label>
-            <div class="limpieza-realizada ${limpiezaRealizada[i] ? 'sí' : 'no'}">
-              ${limpiezaRealizada[i] ? 'Sí' : 'No'}
-            </div>
-          </div>
-          <div class="campo comentarios">
-            <label>Comentarios:</label>
-            <textarea onchange="actualizarDato(${i}, 'comentarios', this.value)">${comentarios[i]}</textarea>
-          </div>
-        `;
-        
-        tabla.appendChild(hermanoDiv);
-      });
-    }
-
-    function actualizarDato(index, campo, valor) {
-      if (campo === 'fecha') {
-        fechas[index] = valor;
-      } else if (campo === 'comentarios') {
-        comentarios[index] = valor;
-      }
-    }
-
-    function filtrarNombres() {
-      const filtro = document.getElementById('buscarNombre').value.toLowerCase();
-      const tabla = document.getElementById("tablaUsuarios");
-      const hermanos = tabla.getElementsByClassName('hermano');
+        </div>
+        <div class="campo comentarios">
+          <label>Comentarios:</label>
+          <textarea onchange="actualizarDato(${i}, 'comentarios', this.value)">${comentarios[i]}</textarea>
+        </div>
+      `;
       
-      Array.from(hermanos).forEach(hermanoDiv => {
-        const nombre = hermanoDiv.querySelector('span').textContent.toLowerCase();
-        if (nombre.includes(filtro)) {
-          hermanoDiv.style.display = "";
-        } else {
-          hermanoDiv.style.display = "none";
-        }
-      });
-    }
+      tabla.appendChild(hermanoDiv);
+    });
+  }
 
-    function redirigirAInicio() {
-      window.location.href = 'index.html';
+  function actualizarDato(index, campo, valor) {
+    if (campo === 'fecha') {
+      fechas[index] = valor;
+    } else if (campo === 'comentarios') {
+      comentarios[index] = valor;
     }
+  }
 
-    function redirigirATurno() {
-      window.location.href = 'formularioturno.html';
-    }
+  function filtrarNombres() {
+    const filtro = document.getElementById('buscarNombre').value.toLowerCase();
+    const tabla = document.getElementById("tablaUsuarios");
+    const hermanos = tabla.getElementsByClassName('hermano');
+    
+    Array.from(hermanos).forEach(hermanoDiv => {
+      const nombre = hermanoDiv.querySelector('span').textContent.toLowerCase();
+      if (nombre.includes(filtro)) {
+        hermanoDiv.style.display = "";
+      } else {
+        hermanoDiv.style.display = "none";
+      }
+    });
+  }
 
-    // Cargar la tabla inicial
-    crearTabla();
+  function redirigirAInicio() {
+    window.location.href = 'index.html';
+  }
+
+  function redirigirATurno() {
+    window.location.href = 'Formulario4.html';
+  }
+
+  // Cargar la tabla inicial
+  crearTabla();
   </script>
 </body>
 </html>
