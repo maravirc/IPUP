@@ -179,14 +179,6 @@
       background-color: #e74c3c;
     }
 
-    /* Agregado para mostrar los resultados de los filtros */
-    .resultados-filtros {
-      margin-top: 10px;
-      text-align: center;
-      font-weight: bold;
-      font-size: 16px;
-    }
-
     @media (max-width: 768px) {
       body {
         padding: 10px;
@@ -243,6 +235,31 @@
         background-color: #219150;
       }
     }
+
+    /* Para pantallas de escritorio, el botón flotante está a la derecha inferior */
+    @media (min-width: 769px) {
+      .btn-flotante {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background-color: #27ae60;
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 60px;
+        height: 60px;
+        font-size: 20px;
+        text-align: center;
+        line-height: 60px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        cursor: pointer;
+        z-index: 100;
+      }
+
+      .btn-flotante:hover {
+        background-color: #219150;
+      }
+    }
   </style>
 </head>
 <body>
@@ -262,8 +279,6 @@
           <option value="no">No</option>
         </select>
       </div>
-      <!-- Resultado del filtro -->
-      <div class="resultados-filtros" id="resultadosFiltros">Total: 0</div>
     </div>
   </div>
 
@@ -291,15 +306,16 @@
   ];
 
   let fechas = [
-    "2025-0-0", "2025-0-0", "2025-0-0", "2025-0-0", "2025-0-0", "2025-0-0",
-    "2025-0-0", "2025-0-0", "2025-0-0", "2025-0-0", "2025-0-0", "2025-0-0",
-    "2025-0-0", "2025-0-0", "2025-0-0", "2025-0-0", "2025-0-0", "2025-0-0",
-    "2025-0-0", "2025-0-0", "2025-4-29", "2025-0-0", "2025-0-0", "2025-0-0",
-    "2025-0-0", "2025-0-0", "2025-0-0", "2025-0-0", "2025-4-29", "2025-0-0",
-    "2025-0-0", "2025-0-0", "2025-0-0", "2025-0-0", "2025-0-0", "2025-0-0",
-    "2025-0-0", "2025-0-0", "2025-0-0", "2025-0-0", "2025-0-0", "2025-0-0",
-    "2025-0-0", "2025-0-0", "2025-0-0", "2025-0-0", "2025-0-0", "2025-0-0"
-  ];
+"2025-0-0", "2025-0-0", "2025-0-0", "2025-0-0", "2025-0-0", "2025-0-0",
+"2025-0-0", "2025-0-0", "2025-0-0", "2025-0-0", "2025-0-0", "2025-0-0",
+"2025-0-0", "2025-0-0", "2025-0-0", "2025-0-0", "2025-0-0", "2025-0-0",
+"2025-0-0", "2025-0-0", "2025-4-29", "2025-0-0", "2025-0-0", "2025-0-0",
+"2025-0-0", "2025-0-0", "2025-0-0", "2025-0-0", "2025-4-29", "2025-0-0",
+"2025-0-0", "2025-0-0", "2025-0-0", "2025-0-0", "2025-0-0", "2025-0-0",
+"2025-0-0", "2025-0-0", "2025-0-0", "2025-0-0", "2025-0-0", "2025-0-0",
+"2025-0-0", "2025-0-0", "2025-0-0", "2025-0-0", "2025-0-0", "2025-0-0"
+
+];
 
   let limpiezaRealizada = [
     false, false, false, false, false, false, false, false, false, false, false, false,
@@ -309,9 +325,9 @@
   ];
 
   let comentarios = [
-    "", "", "", "", "", "La hermanita trabaja en casa hay que conversar su disponibilidad", "", "Solo Martes y Jueves", "", "", "", "", "", "", "", "", "", "", "", "", "Domingos en la mañana", "", "", "Domingos en la tarde", "Domingos en la tarde", 
-    "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "Solo lo dias jueves", "Los Martes o jueves"
-  ];
+  "", "", "", "", "", "La hermanita trabaja en casa hay que conversar su disponibilidad", "", "Solo Martes y Jueves", "", "", "", "", "", "", "", "", "", "", "", "", "Domingos en la mañana", "", "", "Domingos en la tarde", "Domingos en la tarde", 
+  "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "Solo lo dias jueves", "Los Martes o jueves"
+];
 
   function crearTabla() {
     const tabla = document.getElementById("tablaUsuarios");
@@ -342,11 +358,8 @@
           <textarea onchange="actualizarDato(${i}, 'comentarios', this.value)">${comentarios[i]}</textarea>
         </div>`;
 
-
       tabla.appendChild(hermanoDiv);
     });
-
-    actualizarConteo();  // Llamamos a la función para actualizar el conteo
   }
 
   function actualizarDato(index, campo, valor) {
@@ -357,77 +370,46 @@
     }
   }
 
-  function actualizarConteo() {
-    const filtro = document.getElementById('limpieza').value;
-    let countSí = 0;
-    let countNo = 0;
-    let countTotal = 0;
+  function filtrarNombres() {
+    const filtro = document.getElementById('buscarNombre').value.toLowerCase();
+    const tabla = document.getElementById("tablaUsuarios");
+    const hermanos = tabla.getElementsByClassName("hermano");
 
-    for (let i = 0; i < limpiezaRealizada.length; i++) {
-      if (limpiezaRealizada[i] === true) countSí++;
-      if (limpiezaRealizada[i] === false) countNo++;
-      countTotal++;
-    }
-
-    // Si hay un filtro, mostramos el contador según el filtro
-    if (filtro === "sí") {
-      document.getElementById('resultadosFiltros').innerText = `Sí: ${countSí}`;
-    } else if (filtro === "no") {
-      document.getElementById('resultadosFiltros').innerText = `No: ${countNo}`;
-    } else {
-      document.getElementById('resultadosFiltros').innerText = `Total: ${countTotal}`;
+    for (let hermano of hermanos) {
+      const nombre = hermano.querySelector(".campo span").textContent.toLowerCase();
+      if (nombre.includes(filtro)) {
+        hermano.style.display = "";
+      } else {
+        hermano.style.display = "none";
+      }
     }
   }
 
   function filtrarPorLimpieza() {
-    actualizarConteo();
-  }
+    const filtro = document.getElementById('limpieza').value;
+    const tabla = document.getElementById("tablaUsuarios");
+    const hermanos = tabla.getElementsByClassName("hermano");
 
-  function filtrarNombres() {
-    const searchText = document.getElementById('buscarNombre').value.toLowerCase();
-    const tabla = document.getElementById('tablaUsuarios');
-    tabla.innerHTML = '';
-
-    for (let i = 0; i < usuarios.length; i++) {
-      if (usuarios[i].toLowerCase().includes(searchText)) {
-        const hermanoDiv = document.createElement('div');
-        hermanoDiv.classList.add('hermano');
-        hermanoDiv.innerHTML = `
-          <div class="numero">${i + 1}</div>
-          <div class="campo">
-            <label>Nombre:</label>
-            <span>${usuarios[i]}</span>
-          </div>
-          <div class="campo">
-            <label>Fecha:</label>
-            <input type="text" value="${fechas[i]}" onchange="actualizarDato(${i}, 'fecha', this.value)">
-          </div>
-          <div class="campo">
-            <label>Limpieza Realizada:</label>
-            <div class="limpieza-realizada ${limpiezaRealizada[i] ? 'sí' : 'no'}">${limpiezaRealizada[i] ? 'Sí' : 'No'}</div>
-          </div>
-          <div class="campo comentarios">
-            <label>Comentarios:</label>
-            <textarea onchange="actualizarDato(${i}, 'comentarios', this.value)">${comentarios[i]}</textarea>
-          </div>
-        `;
-        tabla.appendChild(hermanoDiv);
+    for (let hermano of hermanos) {
+      const limpieza = hermano.querySelector(".limpieza-realizada").textContent.toLowerCase();
+      if (filtro === "" || limpieza.includes(filtro)) {
+        hermano.style.display = "";
+      } else {
+        hermano.style.display = "none";
       }
     }
-    actualizarConteo();  // Actualizamos el conteo después de filtrar
-  }
-
-  function redirigirAInicio() {
-    window.location.href = "index.html";
   }
 
   function redirigirATurno() {
     window.location.href = "formularioturno.html";
   }
 
-  // Inicializar tabla y conteo
+  function redirigirAInicio() {
+    window.location.href = "index.html";
+  }
+
   crearTabla();
-  </script>
+</script>
 
 </body>
 </html>
