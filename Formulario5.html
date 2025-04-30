@@ -32,6 +32,7 @@
 
     .filtros {
       display: flex;
+      flex-wrap: wrap; /* Permitir que los filtros se ajusten */
       justify-content: space-between;
       align-items: center;
       margin-bottom: 20px;
@@ -59,6 +60,16 @@
 
     .filtros button:hover {
       background-color: #219150;
+    }
+
+    .limpieza-filtro {
+      padding: 8px;
+      font-size: 14px;
+      width: 30%; /* Ajustar para que no se pegue al botón */
+      max-width: 200px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
 
     .tabla-responsive {
@@ -167,6 +178,11 @@
         margin-bottom: 10px;
       }
 
+      .limpieza-filtro {
+        width: 100%;
+        margin-bottom: 10px;
+      }
+
       .btn-flotante {
         position: fixed;
         bottom: 20px;
@@ -225,6 +241,15 @@
     <div class="filtros">
       <input type="text" id="buscarNombre" placeholder="Buscar por nombre..." oninput="filtrarNombres()">
       <button onclick="redirigirATurno()">🕒 Mostrar Horarios</button>
+      <!-- Filtro de limpieza realizada -->
+      <div class="limpieza-filtro">
+        <label for="limpieza">Limpieza Realizada:</label>
+        <select id="limpieza" onchange="filtrarPorLimpieza()">
+          <option value="">Todos</option>
+          <option value="sí">Sí</option>
+          <option value="no">No</option>
+        </select>
+      </div>
     </div>
   </div>
 
@@ -283,7 +308,7 @@
       const hermanoDiv = document.createElement("div");
       hermanoDiv.classList.add("hermano");
 
-      hermanoDiv.innerHTML = `
+      hermanoDiv.innerHTML = ` 
         <div class="numero">${i + 1}</div>
         <div class="campo">
           <label>Nombre:</label>
@@ -328,6 +353,21 @@
         hermanoDiv.style.display = "";
       } else {
         hermanoDiv.style.display = "none";
+      }
+    });
+  }
+
+  function filtrarPorLimpieza() {
+    const filtro = document.getElementById('limpieza').value;
+    const tabla = document.getElementById("tablaUsuarios");
+    const hermanos = tabla.getElementsByClassName('hermano');
+    
+    Array.from(hermanos).forEach(hermanoDiv => {
+      const limpieza = hermanoDiv.querySelector('.limpieza-realizada').textContent.trim().toLowerCase();
+      if (filtro && filtro !== limpieza) {
+        hermanoDiv.style.display = "none";
+      } else {
+        hermanoDiv.style.display = "";
       }
     });
   }
