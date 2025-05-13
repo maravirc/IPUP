@@ -76,33 +76,46 @@
     }
 
     .hermanos-container {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
-  justify-content: center;
-  overflow: hidden; /* Evita desbordes */
-  position: relative; /* Necesario para z-index */
-}
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: center;
+      overflow: hidden;
+      position: relative;
+    }
 
- .hermano-card {
-  background-color: #ffffff;
-  padding: 15px;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-  text-align: center;
-  width: 200px;
-  transition: transform 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
-  transform-origin: center center; /* Agranda desde el centro */
-  position: relative;
-  z-index: 1;
-}
+    .hermano-card {
+      background-color: #ffffff;
+      padding: 15px;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      text-align: center;
+      width: 200px;
+      transition: transform 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
+      transform-origin: center center;
+      position: relative;
+      z-index: 1;
+    }
 
-.hermano-card.hovered {
-    transform: scale(1.2); /* Agrandado sin desbordar */
-  background-color: #e3fce9;
-  box-shadow: 0 12px 24px rgba(39, 174, 96, 0.5);
-  z-index: 5; /* Se pone por encima del resto */
-}
+    /* Nueva animación */
+    @keyframes girarYAgrandar {
+      0% {
+        transform: rotate(0deg) scale(1);
+      }
+      80% {
+        transform: rotate(360deg) scale(1);
+      }
+      100% {
+        transform: rotate(360deg) scale(1.2);
+      }
+    }
+
+    .hermano-card.hovered {
+      animation: girarYAgrandar 0.6s ease forwards;
+      background-color: #e3fce9;
+      box-shadow: 0 12px 24px rgba(39, 174, 96, 0.5);
+      z-index: 5;
+    }
 
     .hermano-card h3 {
       margin: 0;
@@ -180,6 +193,7 @@
     <h3>Turno Jueves</h3>
     <div class="hermanos-container" id="hermanosJueves"></div>
   </div>
+
   <div class="turno-container" id="turnoManana">
     <h3>Turno Domingo Mañana</h3>
     <div class="hermanos-container" id="hermanosManana"></div>
@@ -243,7 +257,6 @@
       });
     }
 
-    // 🔧 NUEVO: Efecto de hover en grupo por turno
     function aplicarHoverPorTurno() {
       const cards = document.querySelectorAll('.hermano-card');
       cards.forEach(card => {
@@ -259,6 +272,10 @@
           cards.forEach(c => {
             if (c.querySelector('.turno').textContent === turno) {
               c.classList.remove('hovered');
+              // Reiniciar la animación
+              c.style.animation = 'none';
+              c.offsetHeight; // Reflow para reiniciar
+              c.style.animation = null;
             }
           });
         });
