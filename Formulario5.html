@@ -383,19 +383,28 @@
   }
 
   function filtrarNombres() {
-    const filtro = document.getElementById('buscarNombre').value.toLowerCase();
-    const tabla = document.getElementById("tablaUsuarios");
-    const hermanos = tabla.getElementsByClassName("hermano");
+  const filtroNombre = document.getElementById('buscarNombre').value.toLowerCase();
+  const filtroLimpieza = document.getElementById('limpieza').value.toLowerCase();
 
-    for (let hermano of hermanos) {
-      const nombre = hermano.querySelector(".campo span").textContent.toLowerCase();
-      if (nombre.includes(filtro)) {
-        hermano.style.display = "";
-      } else {
-        hermano.style.display = "none";
-      }
+  const tabla = document.getElementById("tablaUsuarios");
+  const hermanos = tabla.getElementsByClassName("hermano");
+
+  for (let hermano of hermanos) {
+    const nombre = hermano.querySelector(".campo span").textContent.toLowerCase();
+    const limpieza = hermano.querySelector(".limpieza-realizada").textContent.toLowerCase();
+
+    const coincideNombre = nombre.includes(filtroNombre);
+    const coincideLimpieza = (filtroLimpieza === "" || limpieza === filtroLimpieza);
+
+    if (filtroNombre && coincideNombre && coincideLimpieza) {
+      hermano.style.display = "";
+    } else if (!filtroNombre && coincideLimpieza) {
+      hermano.style.display = "";
+    } else {
+      hermano.style.display = "none";
     }
   }
+}
 
   function filtrarPorLimpieza() {
     const filtro = document.getElementById('limpieza').value;
@@ -410,6 +419,7 @@
         hermano.style.display = "none";
       }
     }
+    filtrarNombres();
   }
 
   function redirigirATurno() {
@@ -425,6 +435,7 @@
 
 </body>
 </html>
+
 
 
 
