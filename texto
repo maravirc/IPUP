@@ -349,7 +349,7 @@
 const hermanosSeleccionados = [
 { nombre: "Hno. Jose Espinoza", turno: "Martes", fecha: "2025-06-11" },
 { nombre: "Hno. Snayder", turno: "Martes", fecha: "2025-06-11" },
-{ nombre: "Hna. Clara ", turno: "Jueves", fecha: "2025-06-13" },
+{ nombre: "Hna. Clarita ", turno: "Jueves", fecha: "2025-06-13" },
 { nombre: "Hna. Jenny Correa", turno: "Jueves", fecha: "2025-06-13" },
 { nombre: "Hno. George Soto", turno: "Domingo Mañana", fecha: "2025-06-16" },
 { nombre: "Hna. Edid Santiago ", turno: "Domingo Tarde", fecha: "2025-06-16" },
