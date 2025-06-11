@@ -448,7 +448,16 @@
       const imgHeight = canvas.height * imgWidth / canvas.width;
   
       doc.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
-      doc.save('registro_limpieza.pdf');
+      //doc.save('registro_limpieza.pdf');
+       // Abrir el PDF en una nueva pestaña
+    const pdfBlob = doc.output('blob');
+    const pdfUrl = URL.createObjectURL(pdfBlob);
+    const newTab = window.open(pdfUrl, '_blank');
+    if (newTab) {
+      newTab.document.title = 'Registro de Limpieza';
+    } else {
+      alert('Por favor, permite las ventanas emergentes para ver el PDF.');
+    }
       document.body.classList.remove('exportando-pdf'); // Limpia clase
     }, 100);
   }
