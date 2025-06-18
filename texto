@@ -347,12 +347,12 @@
 </html>
 
 const hermanosSeleccionados = [
-{ nombre: "Hna. Erica", turno: "Martes", fecha: "2025-06-18" },
-{ nombre: "Hna. Derly Doris", turno: "Martes", fecha: "2025-06-18" },
-{ nombre: "Hna. Gloria ", turno: "Jueves", fecha: "2025-06-20" },
-{ nombre: "Hno. Sergio Linares", turno: "Jueves", fecha: "2025-06-20" },
-{ nombre: "Hno. George Soto", turno: "Domingo Mañana", fecha: "2025-06-23" },
-{ nombre: "Hna. Ingrid Samaritano ", turno: "Domingo Tarde", fecha: "2025-06-23" },
-{ nombre: "Hno. Timoteo", turno: "Domingo Mañana", fecha: "2025-06-23" },
-{ nombre: "Hna. Jhoana Trinidad", turno: "Domingo Tarde", fecha: "2025-06-23" }
+{ nombre: "Hna. Erica", turno: "Martes", fecha: "2025-06-25" },
+{ nombre: "Hna. Derly Doris", turno: "Martes", fecha: "2025-06-25" },
+{ nombre: "Hna. Gloria ", turno: "Jueves", fecha: "2025-06-27" },
+{ nombre: "Hno. Sergio Linares", turno: "Jueves", fecha: "2025-06-27" },
+{ nombre: "Hno. George Soto", turno: "Domingo Mañana", fecha: "2025-06-30" },
+{ nombre: "Hna. Ingrid Samaritano ", turno: "Domingo Tarde", fecha: "2025-06-30" },
+{ nombre: "Hno. Timoteo", turno: "Domingo Mañana", fecha: "2025-06-30" },
+{ nombre: "Hna. Jhoana Trinidad", turno: "Domingo Tarde", fecha: "2025-06-30" }
 ];
