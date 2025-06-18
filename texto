@@ -265,7 +265,7 @@
 
   let limpiezaRealizada = [
     false, false, false, false, false, false, false, false, false, false, false, false,
-    false, false, false, false, false, false, false, false, false, false, false, false,
+    false, false, false, false, false, false, false, false, false, true, false, false,
     false, false, false, false, true, false, false, false, false, false, false, false,
     false, false, false, false, false, false, false, false, false, false
   ];
@@ -349,8 +349,8 @@
 const hermanosSeleccionados = [
 { nombre: "Hna. Erica", turno: "Martes", fecha: "2025-06-25" },
 { nombre: "Hna. Derly Doris", turno: "Martes", fecha: "2025-06-25" },
-{ nombre: "Hna. Gloria ", turno: "Jueves", fecha: "2025-06-27" },
-{ nombre: "Hno. Sergio Linares", turno: "Jueves", fecha: "2025-06-27" },
+{ nombre: "Hno. Jeisen Hilario ", turno: "Jueves", fecha: "2025-06-27" },
+{ nombre: "Hno. Marcial Avellaneda", turno: "Jueves", fecha: "2025-06-27" },
 { nombre: "Hno. George Soto", turno: "Domingo Mañana", fecha: "2025-06-30" },
 { nombre: "Hna. Ingrid Samaritano ", turno: "Domingo Tarde", fecha: "2025-06-30" },
 { nombre: "Hno. Timoteo", turno: "Domingo Mañana", fecha: "2025-06-30" },
