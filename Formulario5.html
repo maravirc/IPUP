@@ -269,6 +269,10 @@
       .exportando-pdf .btn-regresar {
   display: none !important;
 }
+.exportando-pdf button[onclick*="exportarAPDF"] {
+  display: none !important;
+}
+
     }
   </style>
 </head>
@@ -436,26 +440,44 @@
   crearTabla();
 </script>
 <script>
-  function exportarAPDF() {
-  document.body.classList.add('exportando-pdf'); // Agrega clase
+   async function exportarAPDF() {
+    document.body.classList.add('exportando-pdf'); // Oculta elementos flotantes
 
-  setTimeout(async () => {
+    const filtro = document.getElementById("limpieza").value;
+    const tabla = document.querySelector(".tabla-responsive");
+
+    // Crear título dinámico
+    const titulo = document.createElement("h2");
+    titulo.textContent = filtro === "sí"
+      ? "Lista de hermanos que realizaron la limpieza"
+      : filtro === "no"
+        ? "Lista de hermanos que no realizaron la limpieza"
+        : "Lista de hermanos (sin filtro aplicado)";
+    titulo.style.textAlign = "center";
+    titulo.style.marginBottom = "20px";
+    titulo.id = "titulo-temp";
+
+    // Insertar título arriba del contenido temporalmente
+    tabla.parentElement.insertBefore(titulo, tabla);
+
+    await new Promise(resolve => setTimeout(resolve, 100)); // Espera a que se renderice
+
+    const canvas = await html2canvas(tabla.parentElement, { scale: 2 });
+    const imgData = canvas.toDataURL("image/png");
+
     const { jsPDF } = window.jspdf;
-    const doc = new jsPDF('p', 'mm', 'a4');
-    const content = document.querySelector("body");
+    const doc = new jsPDF("p", "mm", "a4");
 
-    const canvas = await html2canvas(content, { scale: 2 });
-    const imgData = canvas.toDataURL('image/png');
     const imgWidth = 210;
-    const pageHeight = 297;
     const imgHeight = canvas.height * imgWidth / canvas.width;
 
-    doc.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
-    doc.save('registro_limpieza.pdf');
+    doc.addImage(imgData, "PNG", 0, 0, imgWidth, imgHeight);
+    doc.save("registro_limpieza.pdf");
 
-    document.body.classList.remove('exportando-pdf'); // Limpia clase
-  }, 100);
-}
+    // Limpieza
+    document.getElementById("titulo-temp").remove();
+    document.body.classList.remove("exportando-pdf");
+  }
   
   </script>
   <button onclick="exportarAPDF()" style="padding: 10px 20px; background-color: #3498db; color: white; border: none; border-radius: 6px; font-size: 14px; cursor: pointer;">📄 Exportar a PDF</button>
