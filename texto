@@ -356,3 +356,32 @@ const hermanosSeleccionados = [
 { nombre: "Hna. Jennifer Calderón", turno: "Domingo Mañana", fecha: "2025-06-30" },
 { nombre: "Hna. Edid Santiago", turno: "Domingo Tarde", fecha: "2025-06-30" }
 ];
+
+function exportarAPDF() {
+    document.body.classList.add('exportando-pdf'); // Agrega clase
+  
+    setTimeout(async () => {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF('p', 'mm', 'a4');
+      const content = document.querySelector("body");
+  
+      const canvas = await html2canvas(content, { scale: 2 });
+      const imgData = canvas.toDataURL('image/png');
+      const imgWidth = 210;
+      const pageHeight = 297;
+      const imgHeight = canvas.height * imgWidth / canvas.width;
+  
+      doc.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
+      //doc.save('registro_limpieza.pdf');
+       // Abrir el PDF en una nueva pestaña
+    const pdfBlob = doc.output('blob');
+    const pdfUrl = URL.createObjectURL(pdfBlob);
+    const newTab = window.open(pdfUrl, '_blank');
+    if (newTab) {
+      newTab.document.title = 'Registro de Limpieza';
+    } else {
+      alert('Por favor, permite las ventanas emergentes para ver el PDF.');
+    }
+      document.body.classList.remove('exportando-pdf'); // Limpia clase
+    }, 100);
+  }
