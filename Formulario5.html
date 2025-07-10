@@ -272,6 +272,9 @@
 .exportando-pdf button[onclick*="exportarAPDF"] {
   display: none !important;
 }
+.exportando-pdf .btn-horario {
+  display: none !important;
+}
 
     }
   </style>
@@ -284,7 +287,8 @@
     <!-- Filtros -->
     <div class="filtros">
       <input type="text" id="buscarNombre" placeholder="Buscar por nombre..." oninput="filtrarNombres()">
-      <button onclick="redirigirATurno()">🕒 Mostrar Horarios</button>
+      <button class="btn-horario" onclick="redirigirATurno()">🕒 Mostrar Horarios</button>
+
       <!-- Filtro de limpieza realizada (sin texto) -->
       <div class="limpieza-filtro">
         <select id="limpieza" onchange="filtrarPorLimpieza()">
