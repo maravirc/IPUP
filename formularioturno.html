@@ -54,55 +54,35 @@
       background-color: #2980b9;
     }
 
-    @media (max-width: 768px) {
-      .header-container {
-        align-items: center;
-      }
-
-      .header-container button {
-        width: 100%;
-      }
-    }
-
-    @media (min-width: 769px) {
-      .header-container {
-        align-items: center;
-      }
-
-      .header-container button {
-        width: 100%;
-        max-width: 200px;
-      }
-    }
-
     .hermanos-container {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
-  justify-content: center;
-  overflow: hidden; /* Evita desbordes */
-  position: relative; /* Necesario para z-index */
-}
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: center;
+      overflow: hidden; /* Evita desbordes */
+      position: relative; /* Necesario para z-index */
+    }
 
- .hermano-card {
-  background-color: #ffffff;
-  padding: 15px;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-  text-align: center;
-  width: 200px;
-  transition: transform 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
-  transform-origin: center center; /* Agranda desde el centro */
-  position: relative;
-  z-index: 1;
-}
+    .hermano-card {
+      background-color: #ffffff;
+      padding: 15px;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      text-align: center;
+      width: 200px;
+      transition: transform 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
+      transform-origin: center center;
+      position: relative;
+      z-index: 1;
+    }
 
-.hermano-card.hovered {
-    transform: scale(1.2); /* Agrandado sin desbordar */
-  background-color: #e3fce9;
-  box-shadow: 0 12px 24px rgba(39, 174, 96, 0.5);
-  z-index: 5; /* Se pone por encima del resto */
-}
+    .hermano-card.hovered {
+      transform: scale(1.2);
+      background-color: #e3fce9;
+      box-shadow: 0 12px 24px rgba(39, 174, 96, 0.5);
+      z-index: 5;
+      animation: girarYAgrandar 0.6s ease forwards;
+    }
 
     .hermano-card h3 {
       margin: 0;
@@ -159,35 +139,41 @@
       color: #555;
       font-style: italic;
     }
+
     @keyframes girarYAgrandar {
-  0% {
-    transform: rotate(0deg) scale(1);
-    border-radius: 8px;
-  }
-  80% {
-    transform: rotate(360deg) scale(1);
-    border-radius: 50%;
-  }
-  100% {
-    transform: rotate(360deg) scale(1.2);
-    border-radius: 50%;
-  }
-}
+      0% { transform: rotate(0deg) scale(1); border-radius: 8px; }
+      80% { transform: rotate(360deg) scale(1); border-radius: 50%; }
+      100% { transform: rotate(360deg) scale(1.2); border-radius: 50%; }
+    }
 
-.hermano-card.hovered {
-  animation: girarYAgrandar 0.6s ease forwards;
-  background-color: #e3fce9;
-  box-shadow: 0 12px 24px rgba(39, 174, 96, 0.5);
-  z-index: 5;
-}
-
+    /* Estilos específicos para exportación a PDF/print */
+    @media print {
+      body {
+        margin: 0;
+        padding: 0;
+      }
+      .header-container {
+        align-items: center !important;
+        position: static !important;
+        box-shadow: none !important;
+      }
+      .header-container button {
+        display: none !important; /* Ocultar el botón regresar */
+      }
+      .texto-biblico {
+        margin-top: 0;
+      }
+      .hermanos-container {
+        page-break-inside: avoid;
+      }
+    }
   </style>
 </head>
 <body>
 
   <div class="header-container">
     <h2>Lista de Limpieza</h2>
-    <button onclick="redirigirFormulario5()">Regresar</button>
+    <button id="btn-regresar" onclick="redirigirFormulario5()">Regresar</button>
     <div class="texto-biblico">
       <p>"13 porque Dios es el que en vosotros produce así el querer como el hacer, por su buena voluntad." - <strong>Filipenses 2:13</strong></p>
     </div>
@@ -212,10 +198,9 @@
     <div class="hermanos-container" id="hermanosTarde"></div>
   </div>
 
-  <button onclick="exportarPDF()">Exportar a PDF</button>
+  <button id="btn-exportar" onclick="exportarPDF()">Exportar a PDF</button>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.js"></script>
-
   <script>
     function formatearFechaBonita(fechaStr) {
       const fecha = new Date(fechaStr);
@@ -234,37 +219,25 @@ const hermanosSeleccionados = [
 { nombre: "Hno. José Vega", turno: "Domingo Mañana", fecha: "2025-07-28" },
 { nombre: "Hna. Edid Santiago", turno: "Domingo Tarde", fecha: "2025-07-28" }
 ];
-    const contenedorManana = document.getElementById("hermanosManana");
-    const contenedorTarde = document.getElementById("hermanosTarde");
-    const contenedorMartes = document.getElementById("hermanosMartes");
-    const contenedorJueves = document.getElementById("hermanosJueves");
 
-    if (!hermanosSeleccionados || hermanosSeleccionados.length === 0) {
-      document.getElementById("hermanosContainer").innerHTML = "<p>No hay hermanos seleccionados para los turnos.</p>";
-    } else {
-      hermanosSeleccionados.forEach(hermano => {
-        const card = document.createElement("div");
-        card.classList.add("hermano-card");
+    const contenedorMap = {
+      "Domingo Mañana": document.getElementById("hermanosManana"),
+      "Domingo Tarde": document.getElementById("hermanosTarde"),
+      "Martes": document.getElementById("hermanosMartes"),
+      "Jueves": document.getElementById("hermanosJueves")
+    };
 
-        card.innerHTML = `
-          <h3>${hermano.nombre}</h3>
-          <p class="turno">${hermano.turno}</p>
-          <p class="fecha">${formatearFechaBonita(hermano.fecha)}</p>
-        `;
+    hermanosSeleccionados.forEach(h => {
+      const card = document.createElement("div");
+      card.className = "hermano-card";
+      card.innerHTML = `
+        <h3>${h.nombre}</h3>
+        <p class="turno">${h.turno}</p>
+        <p class="fecha">${formatearFechaBonita(h.fecha)}</p>
+      `;
+      contenedorMap[h.turno]?.appendChild(card);
+    });
 
-        if (hermano.turno === "Domingo Mañana") {
-          contenedorManana.appendChild(card);
-        } else if (hermano.turno === "Domingo Tarde") {
-          contenedorTarde.appendChild(card);
-        } else if (hermano.turno === "Martes") {
-          contenedorMartes.appendChild(card);
-        } else if (hermano.turno === "Jueves") {
-          contenedorJueves.appendChild(card);
-        }
-      });
-    }
-
-    // 🔧 NUEVO: Efecto de hover en grupo por turno
     function aplicarHoverPorTurno() {
       const cards = document.querySelectorAll('.hermano-card');
       cards.forEach(card => {
@@ -276,42 +249,41 @@ const hermanosSeleccionados = [
             }
           });
         });
-      card.addEventListener('mouseleave', () => {
-  cards.forEach(c => {
-    if (c.querySelector('.turno').textContent === turno) {
-      c.classList.remove('hovered');
-      c.style.animation = 'none';
-      c.offsetHeight; // reflow para reiniciar animación
-      c.style.animation = null;
-      c.style.borderRadius = '8px'; // volver a forma de cuadrado
-    }
-  });
-});
-
+        card.addEventListener('mouseleave', () => {
+          cards.forEach(c => {
+            if (c.querySelector('.turno').textContent === turno) {
+              c.classList.remove('hovered');
+              c.style.animation = 'none';
+              c.offsetHeight;
+              c.style.animation = null;
+              c.style.borderRadius = '8px';
+            }
+          });
+        });
       });
     }
 
     aplicarHoverPorTurno();
 
-    function exportarPDF() {
-      const opciones = {
-        margin: 1,
-        filename: 'turnos_limpieza.pdf',
-        html2canvas: { scale: 2 },
-        jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
-      };
+ function exportarPDF() {
+  const opciones = {
+    margin: [0.2, 1, 1, 1],  // [top, left, bottom, right]
+    filename: 'turnos_limpieza.pdf',
+    html2canvas: {
+      scale: 2,
+      scrollY: 0,
+      ignoreElements: el =>
+        el.id === 'btn-regresar' ||
+        el.id === 'btn-exportar'
+    },
+    jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+  };
 
-      const element = document.body;
-      html2pdf().from(element).set(opciones).toPdf().get('pdf').then(function (pdf) {
+      html2pdf().from(document.body).set(opciones).toPdf().get('pdf').then(function (pdf) {
         const pdfUrl = pdf.output('bloburl');
         window.open(pdfUrl, '_blank');
       });
     }
-
-    function redirigirFormulario5() {
-      window.location.href = 'Formulario5.html';
-    }
   </script>
 </body>
 </html>
-
