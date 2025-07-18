@@ -307,14 +307,6 @@
           <option value="no">No</option>
         </select>
       </div>
-      <div class="limpieza-filtro">
-  <select id="ordenFecha" onchange="ordenarPorFecha()">
-    <option value="">Ordenar fecha</option>
-    <option value="asc">Fecha antigua</option>
-    <option value="desc">Fecha reciente</option>
-  </select>
-</div>
-
     </div>
   </div>
 
@@ -436,60 +428,20 @@
     }
   }
 
-function filtrarPorLimpieza() {
-  const filtro = document.getElementById('limpieza').value;
+  function filtrarPorLimpieza() {
+    const filtro = document.getElementById('limpieza').value;
+    const tabla = document.getElementById("tablaUsuarios");
+    const hermanos = tabla.getElementsByClassName("hermano");
 
-  // Si se selecciona "Todos", aplicar orden automático
-  if (filtro === "") {
-    document.getElementById('ordenFecha').value = "asc"; // asignar ascendente
-    ordenarPorFecha(); // aplicar orden directamente
-    return; // no ejecutar más abajo
+    for (let hermano of hermanos) {
+      const limpieza = hermano.querySelector(".limpieza-realizada").textContent.toLowerCase();
+      if (filtro === "" || limpieza.includes(filtro)) {
+        hermano.style.display = "";
+      } else {
+        hermano.style.display = "none";
+      }
+    }
   }
-
-  // Mostrar solo los hermanos según filtro "sí" o "no"
-  const tabla = document.getElementById("tablaUsuarios");
-  tabla.innerHTML = "";
-
-  let lista = usuarios.map((usuario, i) => ({
-    usuario,
-    fecha: fechas[i],
-    limpieza: limpiezaRealizada[i],
-    comentario: comentarios[i]
-  }));
-
-  const limpiar = (filtro === "sí");
-
-  lista = lista.filter(item => item.limpieza === limpiar);
-
-  lista.forEach((item, i) => {
-    const hermanoDiv = document.createElement("div");
-    hermanoDiv.classList.add("hermano");
-
-    hermanoDiv.innerHTML =  
-      `<div class="numero">${i + 1}</div>
-      <div class="campo">
-        <label>Nombre:</label>
-        <span>${item.usuario}</span>
-      </div>
-      <div class="campo">
-        <label>Fecha:</label>
-        <input type="text" value="${item.fecha}" onchange="actualizarDatoPorNombre('${item.usuario}', 'fecha', this.value)">
-      </div>
-      <div class="campo">
-        <label>Limpieza Realizada:</label>
-        <div class="limpieza-realizada ${item.limpieza ? 'sí' : 'no'}">
-          ${item.limpieza ? 'Sí' : 'No'}
-        </div>
-      </div>
-      <div class="campo comentarios">
-        <label>Comentarios:</label>
-        <textarea onchange="actualizarDatoPorNombre('${item.usuario}', 'comentarios', this.value)">${item.comentario}</textarea>
-      </div>`;
-
-    tabla.appendChild(hermanoDiv);
-  });
-}
-
 
   function redirigirATurno() {
     window.location.href = "formularioturno.html";
@@ -540,83 +492,6 @@ function filtrarPorLimpieza() {
     document.getElementById("titulo-temp").remove();
     document.body.classList.remove("exportando-pdf");
   }
-
-  function ordenarPorFecha() {
-  const orden = document.getElementById('ordenFecha').value;
-  const filtroLimpieza = document.getElementById('limpieza').value; // "sí", "no", ""
-
-  // Combinar todos los datos en un array de objetos
-  let lista = usuarios.map((usuario, i) => ({
-    usuario,
-    fecha: fechas[i],
-    limpieza: limpiezaRealizada[i],
-    comentario: comentarios[i]
-  }));
-
-  // Aplicar filtro de limpieza
-  if (filtroLimpieza === 'sí') {
-    lista = lista.filter(item => item.limpieza === true);
-  } else if (filtroLimpieza === 'no') {
-    lista = lista.filter(item => item.limpieza === false);
-  }
-
-  // Separar por fechas válidas e inválidas
-  const fechaValida = f => /^\d{4}-\d{2}-\d{2}$/.test(f);
-  const conFecha = lista.filter(item => fechaValida(item.fecha));
-  const sinFecha = lista.filter(item => !fechaValida(item.fecha));
-
-  // Ordenar los que tienen fecha válida
-  conFecha.sort((a, b) => {
-    const fechaA = new Date(a.fecha);
-    const fechaB = new Date(b.fecha);
-    return orden === 'asc' ? fechaA - fechaB : fechaB - fechaA;
-  });
-
-  const listaOrdenada = [...conFecha, ...sinFecha];
-
-  // Recrear la tabla solo con los datos filtrados y ordenados
-  const tabla = document.getElementById("tablaUsuarios");
-  tabla.innerHTML = "";
-
-  listaOrdenada.forEach((item, i) => {
-    const hermanoDiv = document.createElement("div");
-    hermanoDiv.classList.add("hermano");
-
-    hermanoDiv.innerHTML =  
-      `<div class="numero">${i + 1}</div>
-      <div class="campo">
-        <label>Nombre:</label>
-        <span>${item.usuario}</span>
-      </div>
-      <div class="campo">
-        <label>Fecha:</label>
-        <input type="text" value="${item.fecha}" onchange="actualizarDatoPorNombre('${item.usuario}', 'fecha', this.value)">
-      </div>
-      <div class="campo">
-        <label>Limpieza Realizada:</label>
-        <div class="limpieza-realizada ${item.limpieza ? 'sí' : 'no'}">
-          ${item.limpieza ? 'Sí' : 'No'}
-        </div>
-      </div>
-      <div class="campo comentarios">
-        <label>Comentarios:</label>
-        <textarea onchange="actualizarDatoPorNombre('${item.usuario}', 'comentarios', this.value)">${item.comentario}</textarea>
-      </div>`;
-
-    tabla.appendChild(hermanoDiv);
-  });
-}
-function actualizarDatoPorNombre(nombre, campo, valor) {
-  const index = usuarios.findIndex(u => u === nombre);
-  if (index === -1) return;
-
-  if (campo === 'fecha') {
-    fechas[index] = valor;
-  } else if (campo === 'comentarios') {
-    comentarios[index] = valor;
-  }
-}
-
   
   </script>
   <button onclick="exportarAPDF()" style="padding: 10px 20px; background-color: #3498db; color: white; border: none; border-radius: 6px; font-size: 14px; cursor: pointer;">📄 Exportar a PDF</button>
@@ -626,10 +501,3 @@ function actualizarDatoPorNombre(nombre, campo, valor) {
   </html>
 </body>
 </html>
-
-
-
-
-
-
-
