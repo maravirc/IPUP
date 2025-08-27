@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Turnos de Limpieza</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f4f6f8;
+      margin: 0;
+      padding: 20px;
+    }
+
+    h2 {
+      text-align: center;
+      color: #333;
+      margin-bottom: 10px;
+    }
+
+    .header-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      background-color: #fff;
+      padding: 10px 20px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      z-index: 10;
+    }
+
+    .header-container h2 {
+      margin: 0;
+      flex-grow: 1;
+      text-align: left;
+    }
+
+    .header-container button {
+      background-color: #3498db;
+      color: white;
+      padding: 10px 15px;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      width: 100%;
+      max-width: 200px;
+      margin-top: 10px;
+    }
+
+    .header-container button:hover {
+      background-color: #2980b9;
+    }
+
+    .hermanos-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: center;
+      overflow: hidden; /* Evita desbordes */
+      position: relative; /* Necesario para z-index */
+    }
+
+    .hermano-card {
+      background-color: #ffffff;
+      padding: 15px;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      text-align: center;
+      width: 200px;
+      transition: transform 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
+      transform-origin: center center;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hermano-card.hovered {
+      transform: scale(1.2);
+      background-color: #e3fce9;
+      box-shadow: 0 12px 24px rgba(39, 174, 96, 0.5);
+      z-index: 5;
+      animation: girarYAgrandar 0.6s ease forwards;
+    }
+
+    .hermano-card h3 {
+      margin: 0;
+      color: #333;
+    }
+
+    .hermano-card p {
+      margin: 10px 0;
+      color: #2a2b2a;
+    }
+
+    .turno {
+      font-weight: bold;
+      color: #27ae60;
+    }
+
+    .fecha {
+      font-size: 14px;
+      color: #777;
+    }
+
+    .turno-container {
+      margin-bottom: 30px;
+    }
+
+    .turno-container h3 {
+      text-align: center;
+      color: #27ae60;
+      font-size: 18px;
+      margin-bottom: 10px;
+    }
+
+    button {
+      width: 100%;
+      margin-top: 20px;
+      padding: 10px 20px;
+      background-color: #27ae60;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #219150;
+    }
+
+    .texto-biblico {
+      text-align: center;
+      margin-top: 10px;
+      font-size: 18px;
+      color: #555;
+      font-style: italic;
+    }
+
+    @keyframes girarYAgrandar {
+      0% { transform: rotate(0deg) scale(1); border-radius: 8px; }
+      80% { transform: rotate(360deg) scale(1); border-radius: 50%; }
+      100% { transform: rotate(360deg) scale(1.2); border-radius: 50%; }
+    }
+
+    /* Estilos específicos para exportación a PDF/print */
+    @media print {
+      body {
+        margin: 0;
+        padding: 0;
+      }
+      .header-container {
+        align-items: center !important;
+        position: static !important;
+        box-shadow: none !important;
+      }
+      .header-container button {
+        display: none !important; /* Ocultar el botón regresar */
+      }
+      .texto-biblico {
+        margin-top: 0;
+      }
+      .hermanos-container {
+        page-break-inside: avoid;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header-container">
+    <h2>Lista de Limpieza</h2>
+    <button id="btn-regresar" onclick="redirigirFormulario5()">Regresar</button>
+    <div class="texto-biblico">
+      <p>"10 En ti confiarán los que conocen tu nombre,
+Por cuanto tú, oh Jehová, no desamparaste a los que te buscaron.." - <strong>Salmos 9:10</strong></p>
+    </div>
+  </div>
+
+  <div class="turno-container" id="turnoMartes">
+    <h3>Turno Martes</h3>
+    <div class="hermanos-container" id="hermanosMartes"></div>
+  </div>
+
+  <div class="turno-container" id="turnoJueves">
+    <h3>Turno Jueves</h3>
+    <div class="hermanos-container" id="hermanosJueves"></div>
+  </div>
+  <div class="turno-container" id="turnoManana">
+    <h3>Turno Domingo Mañana</h3>
+    <div class="hermanos-container" id="hermanosManana"></div>
+  </div>
+
+  <div class="turno-container" id="turnoTarde">
+    <h3>Turno Domingo Tarde</h3>
+    <div class="hermanos-container" id="hermanosTarde"></div>
+  </div>
+
+  <button id="btn-exportar" onclick="exportarPDF()">Exportar a PDF</button>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.js"></script>
+  <script>
+    function formatearFechaBonita(fechaStr) {
+      const fecha = new Date(fechaStr);
+      const opciones = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
+      const fechaFormateada = fecha.toLocaleDateString('es-ES', opciones);
+      return fechaFormateada.charAt(0).toUpperCase() + fechaFormateada.slice(1);
+    }
+
+const hermanosSeleccionados = [
+{ nombre: "Hna. Ruth Trinidad Acosta Ferreyra", turno: "Martes", fecha: "2025-08-27" },
+{ nombre: "Hno  Marcial Avellaneda. ", turno: "Martes", fecha: "2025-08-27" },
+{ nombre: "Hna. Clarita Corales", turno: "Jueves", fecha: "2025-08-29" },
+{ nombre: "Hna. Jenny Correa", turno: "Jueves", fecha: "2025-08-29" },
+{ nombre: "Hno. Adrian Blas", turno: "Domingo Mañana", fecha: "2025-09-01" },
+{ nombre: "Hno. Jair", turno: "Domingo Tarde", fecha: "2025-09-01" },
+{ nombre: "Hno. Holder", turno: "Domingo Mañana", fecha: "2025-09-01" },
+{ nombre: "Hno. Favio Huaman", turno: "Domingo Tarde", fecha: "2025-09-01" }
+];
+
+    const contenedorMap = {
+      "Domingo Mañana": document.getElementById("hermanosManana"),
+      "Domingo Tarde": document.getElementById("hermanosTarde"),
+      "Martes": document.getElementById("hermanosMartes"),
+      "Jueves": document.getElementById("hermanosJueves")
+    };
+
+    hermanosSeleccionados.forEach(h => {
+      const card = document.createElement("div");
+      card.className = "hermano-card";
+      card.innerHTML = `
+        <h3>${h.nombre}</h3>
+        <p class="turno">${h.turno}</p>
+        <p class="fecha">${formatearFechaBonita(h.fecha)}</p>
+      `;
+      contenedorMap[h.turno]?.appendChild(card);
+    });
+
+    function aplicarHoverPorTurno() {
+      const cards = document.querySelectorAll('.hermano-card');
+      cards.forEach(card => {
+        const turno = card.querySelector('.turno').textContent;
+        card.addEventListener('mouseenter', () => {
+          cards.forEach(c => {
+            if (c.querySelector('.turno').textContent === turno) {
+              c.classList.add('hovered');
+            }
+          });
+        });
+        card.addEventListener('mouseleave', () => {
+          cards.forEach(c => {
+            if (c.querySelector('.turno').textContent === turno) {
+              c.classList.remove('hovered');
+              c.style.animation = 'none';
+              c.offsetHeight;
+              c.style.animation = null;
+              c.style.borderRadius = '8px';
+            }
+          });
+        });
+      });
+    }
+
+    aplicarHoverPorTurno();
+
+ function exportarPDF() {
+  const opciones = {
+    margin: [0.2, 1, 1, 1],  // [top, left, bottom, right]
+    filename: 'turnos_limpieza.pdf',
+    html2canvas: {
+      scale: 2,
+      scrollY: 0,
+      ignoreElements: el =>
+        el.id === 'btn-regresar' ||
+        el.id === 'btn-exportar'
+    },
+    jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+  };
+
+      html2pdf().from(document.body).set(opciones).toPdf().get('pdf').then(function (pdf) {
+        const pdfUrl = pdf.output('bloburl');
+        window.open(pdfUrl, '_blank');
+      });
+    }
+     function redirigirFormulario5() {
+      window.location.href = 'Formulario5.html';
+    }
+  </script>
+</body>
+</html>

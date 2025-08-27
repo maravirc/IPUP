@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Registro de Limpieza</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f4f6f8;
+      margin: 0;
+      padding: 20px;
+    }
+
+    h2 {
+      text-align: center;
+      color: #333;
+    }
+
+    .header {
+      position: sticky;
+      top: 0;
+      background-color: #fff;
+      z-index: 10;
+      padding: 10px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .filtros {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .filtros input {
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 14px;
+      width: 60%;
+      max-width: 300px;
+    }
+
+    .filtros button {
+      padding: 10px 20px;
+      background-color: #27ae60;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .filtros button:hover {
+      background-color: #219150;
+    }
+
+    .limpieza-filtro {
+      padding: 8px;
+      font-size: 14px;
+      width: 30%;
+      max-width: 200px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    /* Estilo bonito para el select con flechita verde */
+    .limpieza-filtro select {
+      padding: 10px 15px;
+      border: 2px solid #27ae60;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: bold;
+      color: #333;
+      background-color: #f7faf7;
+      background-image: url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"%3E%3Cpath fill="%2327ae60" d="M4 5l4 4 4-4z"%3E%3C/path%3E%3C/svg%3E');
+      background-repeat: no-repeat;
+      background-position: right 10px center;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      width: 100%; /* Ocupa todo el ancho posible */
+    }
+
+    .limpieza-filtro select:hover {
+      border-color: #219150;
+    }
+
+    .limpieza-filtro select:focus {
+      outline: none;
+      border-color: #219150;
+      box-shadow: 0 0 5px rgba(39, 174, 96, 0.5);
+    }
+
+    /* Tabla responsive */
+    .tabla-responsive {
+      width: 100%;
+      overflow-x: auto;
+      margin-top: 20px;
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+    }
+
+    .tabla-wrapper {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-start;
+      gap: 10px;
+    }
+
+    .hermano {
+      width: 100%;
+      max-width: 350px;
+      padding: 15px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      background-color: #fafafa;
+      position: relative;
+    }
+
+    .numero {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      font-size: 18px;
+      font-weight: bold;
+      color: #333;
+    }
+
+    .campo {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 10px;
+    }
+
+    .campo label {
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+
+    .campo input, .campo textarea {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+
+    textarea {
+      height: 80px;
+      resize: vertical;
+    }
+
+    .limpieza-realizada {
+      font-weight: bold;
+      padding: 5px;
+      border-radius: 4px;
+    }
+
+    .limpieza-realizada.sí {
+      color: white;
+      background-color: #27ae60;
+    }
+
+    .limpieza-realizada.no {
+      color: white;
+      background-color: #e74c3c;
+    }
+
+    @media (max-width: 768px) {
+      body {
+        padding: 10px;
+      }
+
+      .tabla-wrapper {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .hermano {
+        width: 100%;
+      }
+
+      .campo {
+        max-width: 100%;
+      }
+
+      .filtros {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .filtros input {
+        width: 80%;
+        max-width: 100%;
+        margin-bottom: 10px;
+      }
+
+      .limpieza-filtro {
+        width: 100%;
+        margin-bottom: 10px;
+      }
+
+      .btn-flotante {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background-color: #27ae60;
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 60px;
+        height: 60px;
+        font-size: 20px;
+        text-align: center;
+        line-height: 60px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        cursor: pointer;
+        z-index: 100;
+      }
+
+      .btn-flotante:hover {
+        background-color: #219150;
+      }
+    }
+
+    /* Para pantallas de escritorio, el botón flotante está a la derecha inferior */
+    @media (min-width: 769px) {
+      .btn-flotante {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background-color: #27ae60;
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 60px;
+        height: 60px;
+        font-size: 20px;
+        text-align: center;
+        line-height: 60px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        cursor: pointer;
+        z-index: 100;
+      }
+
+      .btn-flotante:hover {
+        background-color: #219150;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <h2>Registro de Limpieza</h2>
+
+    <!-- Filtros -->
+    <div class="filtros">
+      <input type="text" id="buscarNombre" placeholder="Buscar por nombre..." oninput="filtrarNombres()">
+      <button onclick="redirigirATurno()">🕒 Mostrar Horarios</button>
+      <!-- Filtro de limpieza realizada (sin texto) -->
+      <div class="limpieza-filtro">
+        <select id="limpieza" onchange="filtrarPorLimpieza()">
+          <option value="">Todos</option>
+          <option value="sí">Sí</option>
+          <option value="no">No</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- Contenedor para los campos de la tabla -->
+  <div class="tabla-responsive">
+    <div class="tabla-wrapper" id="tablaUsuarios"></div>
+  </div>
+
+  <!-- Botón flotante para computadoras y móviles -->
+  <button class="btn-flotante" onclick="redirigirAInicio()">🏠</button>
+
+  <script>
+  let usuarios = [
+    "Hno. Alexander Rengifo", "Hno. Vitmer", "Hno. George Yonatan Soto Navarro", "Hno. Daniel",
+    "Hno. Edgar Calderón", "Hno. Blanca", "Hno. Adrian Blas", "Hno. Jose Espinoza", "Hno. Anderson", "Hno. John Pariona",
+    "Hno. Clemente", "Hna. Betty Rosado", "Hna. Gabriela", "Hno. Julian Samaritano",
+    "Hna. Hna. Elva", "Hna. Edid Santiago", "Hna. Edith Chinchay", "Hna. Jennifer Calderón",
+    "Hna. Karolyne Torres", "Hno. Marcial Avellaneda", "Hna. Milagros Guillén", "Hna. Mishell",
+    "Hno. Sergio Quiliche", "Hna. Geraldine", "Hna. Jhoana Trinidad", "Hna. Ingrid Samaritano",
+    "Hno. Eduardo", "Hno. Rene Puño Pariona", "Hna. Karen Ventura", "Hna. Lida Blas",
+    "Hna. Tessi Blas", "Hna. Reyna Caurino", "Hna. Marlene Estrada", "Hna. Erika",
+    "Hna. Mariela Encinas", "Hno. Jeisen Hilario", "Hno. Sergio Linarez", "Hna. Clara",
+    "Hna. Feliciana", "Hno. Faustino Linares", "Hna. Gloría Rodríguez", "Hno. Victoria Colonia",
+    "Hno. Eli Timoteo", "Hna. Jeni Correa", "Hna. Yara Capinoa", "Hna. Rosio", "Hna. Rut", "Hno Snayder"
+  ];
+
+  let fechas = [
+"2025-0-0", "2025-0-0", "2025-0-0", "2025-0-0", "2025-0-0", "2025-0-0",
+"2025-0-0", "2025-0-0", "2025-0-0", "2025-0-0", "2025-0-0", "2025-0-0",
+"2025-0-0", "2025-0-0", "2025-0-0", "2025-0-0", "2025-0-0", "2025-0-0",
+"2025-0-0", "2025-0-0", "2025-4-29", "2025-0-0", "2025-0-0", "2025-0-0",
+"2025-0-0", "2025-0-0", "2025-0-0", "2025-0-0", "2025-4-29", "2025-0-0",
+"2025-0-0", "2025-0-0", "2025-0-0", "2025-0-0", "2025-0-0", "2025-0-0",
+"2025-0-0", "2025-0-0", "2025-0-0", "2025-0-0", "2025-0-0", "2025-0-0",
+"2025-0-0", "2025-0-0", "2025-0-0", "2025-0-0", "2025-0-0", "2025-0-0"
+
+];
+
+  let limpiezaRealizada = [
+    false, false, false, false, false, false, false, false, false, false, false, false,
+    false, false, false, false, false, false, false, false, false, false, false, false,
+    false, false, false, false, true, false, false, false, false, false, false, false,
+    false, false, false, false, false, false, false, false, false, false
+  ];
+
+  let comentarios = [
+  "", "", "", "", "", "La hermanita trabaja en casa hay que conversar su disponibilidad", "", "Solo Martes y Jueves", "", "", "", "", "", "", "", "", "", "", "", "", "Domingos en la mañana", "", "", "Domingos en la tarde", "Domingos en la tarde", 
+  "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "Solo lo dias jueves", "Los Martes o jueves"
+];
+
+  function crearTabla() {
+    const tabla = document.getElementById("tablaUsuarios");
+    tabla.innerHTML = "";
+
+    usuarios.forEach((usuario, i) => {
+      const hermanoDiv = document.createElement("div");
+      hermanoDiv.classList.add("hermano");
+
+      hermanoDiv.innerHTML =  
+        `<div class="numero">${i + 1}</div>
+        <div class="campo">
+          <label>Nombre:</label>
+          <span>${usuario}</span>
+        </div>
+        <div class="campo">
+          <label>Fecha:</label>
+          <input type="text" value="${fechas[i]}" onchange="actualizarDato(${i}, 'fecha', this.value)">
+        </div>
+        <div class="campo">
+          <label>Limpieza Realizada:</label>
+          <div class="limpieza-realizada ${limpiezaRealizada[i] ? 'sí' : 'no'}">
+            ${limpiezaRealizada[i] ? 'Sí' : 'No'}
+          </div>
+        </div>
+        <div class="campo comentarios">
+          <label>Comentarios:</label>
+          <textarea onchange="actualizarDato(${i}, 'comentarios', this.value)">${comentarios[i]}</textarea>
+        </div>`;
+
+      tabla.appendChild(hermanoDiv);
+    });
+  }
+
+  function actualizarDato(index, campo, valor) {
+    if (campo === 'fecha') {
+      fechas[index] = valor;
+    } else if (campo === 'comentarios') {
+      comentarios[index] = valor;
+    }
+  }
+
+  function filtrarNombres() {
+    const filtro = document.getElementById('buscarNombre').value.toLowerCase();
+    const tabla = document.getElementById("tablaUsuarios");
+    const hermanos = tabla.getElementsByClassName("hermano");
+
+    for (let hermano of hermanos) {
+      const nombre = hermano.querySelector(".campo span").textContent.toLowerCase();
+      if (nombre.includes(filtro)) {
+        hermano.style.display = "";
+      } else {
+        hermano.style.display = "none";
+      }
+    }
+  }
+
+  function filtrarPorLimpieza() {
+    const filtro = document.getElementById('limpieza').value;
+    const tabla = document.getElementById("tablaUsuarios");
+    const hermanos = tabla.getElementsByClassName("hermano");
+
+    for (let hermano of hermanos) {
+      const limpieza = hermano.querySelector(".limpieza-realizada").textContent.toLowerCase();
+      if (filtro === "" || limpieza.includes(filtro)) {
+        hermano.style.display = "";
+      } else {
+        hermano.style.display = "none";
+      }
+    }
+  }
+
+  function redirigirATurno() {
+    window.location.href = "formularioturno.html";
+  }
+
+  function redirigirAInicio() {
+    window.location.href = "index.html";
+  }
+
+  crearTabla();
+</script>
+
+</body>
+</html>

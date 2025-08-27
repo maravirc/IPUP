@@ -1,0 +1,856 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Registro de Limpieza</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f4f6f8;
+      margin: 0;
+      padding: 20px;
+    }
+
+    h2 {
+      text-align: center;
+      color: #333;
+    }
+
+    .header {
+      position: sticky;
+      top: 0;
+      background-color: #fff;
+      z-index: 10;
+      padding: 10px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .filtros {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .filtros input {
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 14px;
+      width: 60%;
+      max-width: 300px;
+    }
+
+    .filtros button {
+      padding: 10px 20px;
+      background-color: #27ae60;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .filtros button:hover {
+      background-color: #219150;
+    }
+
+    .tabla-responsive {
+      width: 100%;
+      overflow-x: auto;
+      margin-top: 20px;
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+    }
+
+    .tabla-wrapper {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-start;
+      gap: 10px;
+    }
+
+    .hermano {
+      width: 100%;
+      max-width: 350px;
+      padding: 15px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      background-color: #fafafa;
+      position: relative; /* Para posicionar el número en la esquina */
+    }
+
+    .numero {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      font-size: 18px;
+      font-weight: bold;
+      color: #333;
+    }
+
+    .campo {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 10px;
+    }
+
+    .campo label {
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+
+    .campo input, .campo textarea {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+
+    textarea {
+      height: 80px;
+      resize: vertical;
+    }
+
+    .limpieza-realizada {
+      font-weight: bold;
+      padding: 5px;
+      border-radius: 4px;
+    }
+
+    .limpieza-realizada.sí {
+      color: white;
+      background-color: #27ae60;
+    }
+
+    .limpieza-realizada.no {
+      color: white;
+      background-color: #e74c3c;
+    }
+
+    /* Estilos para dispositivos móviles */
+    @media (max-width: 768px) {
+      body {
+        padding: 10px;
+      }
+
+      .tabla-wrapper {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .hermano {
+        width: 100%;
+      }
+
+      .campo {
+        max-width: 100%;
+      }
+
+      .filtros {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .filtros input {
+        width: 80%;
+        max-width: 100%;
+        margin-bottom: 10px;
+      }
+
+      .btn-flotante {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background-color: #27ae60;
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 60px;
+        height: 60px;
+        font-size: 20px;
+        text-align: center;
+        line-height: 60px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        cursor: pointer;
+        z-index: 100;
+      }
+
+      .btn-flotante:hover {
+        background-color: #219150;
+      }
+    }
+
+    /* Para computadoras de escritorio: mostrar el botón flotante también */
+    @media (min-width: 769px) {
+      .btn-flotante {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background-color: #27ae60;
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 60px;
+        height: 60px;
+        font-size: 20px;
+        text-align: center;
+        line-height: 60px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        cursor: pointer;
+        z-index: 100;
+      }
+
+      .btn-flotante:hover {
+        background-color: #219150;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <h2>Registro de Limpieza</h2>
+
+    <!-- Filtros -->
+    <div class="filtros">
+      <input type="text" id="buscarNombre" placeholder="Buscar por nombre..." oninput="filtrarNombres()">
+      <button onclick="redirigirATurno()">🕒 Mostrar Horarios</button>
+    </div>
+  </div>
+
+  <!-- Contenedor para los campos de la tabla -->
+  <div class="tabla-responsive">
+    <div class="tabla-wrapper" id="tablaUsuarios"></div>
+  </div>
+
+  <!-- Botón flotante para computadoras y móviles -->
+  <button class="btn-flotante" onclick="redirigirAInicio()">🏠</button>
+
+  <script>
+  let usuarios = [
+    "Hno. Alexander Rengifo", "Hno. Vitmer", "Hno. George Yonatan Soto Navarro", "Hno. Daniel",
+    "Hno. Edgar Calderón", "Hno. Blanca", "Hno. Adrian Blas", "Hno. Jose Espinoza", "Hno. Anderson", "Hno. John Pariona",
+    "Hno. Clemente", "Hna. Betty Rosado", "Hna. Gabriela", "Hno. Julian Samaritano",
+    "Hna. Hna. Elva", "Hna. Edid Santiago", "Hna. Edith Chinchay", "Hna. Jennifer Calderón",
+    "Hna. Karolyne Torres", "Hno. Marcial Avellaneda", "Hna. Milagros Guillén", "Hna. Mishell",
+    "Hno. Sergio Quiliche", "Hna. Geraldine", "Hna. Jhoana Trinidad", "Hna. Ingrid Samaritano",
+    "Hno. Eduardo", "Hno. Rene Puño Pariona", "Hna. Karen Ventura", "Hna. Lida Blas",
+    "Hna. Tessi Blas", "Hna. Reyna Caurino", "Hna. Marlene Estrada", "Hna. Erika",
+    "Hna. Mariela Encinas", "Hno. Jeisen Hilario", "Hno. Sergio Linarez", "Hna. Clara",
+    "Hna. Feliciana", "Hno. Faustino Linares", "Hna. Gloría Rodríguez", "Hno. Victoria Colonia",
+    "Hno. Eli Timoteo", "Hna. Jeni Correa", "Hna. Yara Capinoa", "Hna. Rosío", "Hna. Rut", "Hno Snayder"
+  ];
+
+  let fechas = [
+"2025-0-0", "2025-0-0", "2025-0-0", "2025-0-0", "2025-0-0", "2025-0-0",
+"2025-0-0", "2025-0-0", "2025-0-0", "2025-0-0", "2025-0-0", "2025-0-0",
+"2025-0-0", "2025-0-0", "2025-0-0", "2025-0-0", "2025-0-0", "2025-0-0",
+"2025-0-0", "2025-0-0", "2025-4-29", "2025-0-0", "2025-0-0", "2025-0-0",
+"2025-0-0", "2025-0-0", "2025-0-0", "2025-0-0", "2025-4-29", "2025-0-0",
+"2025-0-0", "2025-0-0", "2025-0-0", "2025-0-0", "2025-0-0", "2025-0-0",
+"2025-0-0", "2025-0-0", "2025-0-0", "2025-0-0", "2025-0-0", "2025-0-0",
+"2025-0-0", "2025-0-0", "2025-0-0", "2025-0-0", "2025-0-0", "2025-0-0"
+
+];
+
+  let limpiezaRealizada = [
+    false, false, false, false, false, false, false, false, false, false, false, false,
+    false, false, false, false, false, false, false, false, false, true, false, false,
+    false, false, false, false, true, false, false, false, false, false, false, false,
+    false, false, false, false, false, false, false, false, false, false
+  ];
+
+  let comentarios = [
+  "", "", "", "", "", "La hermanita trabaja en casa hay que conversar su disponibilidad", "", "Solo Martes y Jueves", "", "", "", "", "", "", "", "", "", "", "", "", "Domingos en la mañana", "", "", "Domingos en la tarde", "Domingos en la tarde", 
+  "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "Solo lo dias jueves", "Los Martes o jueves"
+];
+
+  function crearTabla() {
+    const tabla = document.getElementById("tablaUsuarios");
+    tabla.innerHTML = "";
+
+    usuarios.forEach((usuario, i) => {
+      const hermanoDiv = document.createElement("div");
+      hermanoDiv.classList.add("hermano");
+
+      hermanoDiv.innerHTML = `
+        <div class="numero">${i + 1}</div>
+        <div class="campo">
+          <label>Nombre:</label>
+          <span>${usuario}</span>
+        </div>
+        <div class="campo">
+          <label>Fecha:</label>
+          <input type="text" value="${fechas[i]}" onchange="actualizarDato(${i}, 'fecha', this.value)">
+        </div>
+        <div class="campo">
+          <label>Limpieza Realizada:</label>
+          <div class="limpieza-realizada ${limpiezaRealizada[i] ? 'sí' : 'no'}">
+            ${limpiezaRealizada[i] ? 'Sí' : 'No'}
+          </div>
+        </div>
+        <div class="campo comentarios">
+          <label>Comentarios:</label>
+          <textarea onchange="actualizarDato(${i}, 'comentarios', this.value)">${comentarios[i]}</textarea>
+        </div>
+      `;
+      
+      tabla.appendChild(hermanoDiv);
+    });
+  }
+
+  function actualizarDato(index, campo, valor) {
+    if (campo === 'fecha') {
+      fechas[index] = valor;
+    } else if (campo === 'comentarios') {
+      comentarios[index] = valor;
+    }
+  }
+
+  function filtrarNombres() {
+    const filtro = document.getElementById('buscarNombre').value.toLowerCase();
+    const tabla = document.getElementById("tablaUsuarios");
+    const hermanos = tabla.getElementsByClassName('hermano');
+    
+    Array.from(hermanos).forEach(hermanoDiv => {
+      const nombre = hermanoDiv.querySelector('span').textContent.toLowerCase();
+      if (nombre.includes(filtro)) {
+        hermanoDiv.style.display = "";
+      } else {
+        hermanoDiv.style.display = "none";
+      }
+    });
+  }
+
+  function redirigirAInicio() {
+    window.location.href = 'index.html';
+  }
+
+  function redirigirATurno() {
+    window.location.href = 'formularioturno.html';
+  }
+
+  // Cargar la tabla inicial
+  crearTabla();
+  </script>
+</body>
+</html>
+
+const hermanosSeleccionados = [
+{ nombre: "Hno. Jeisen Hilario ", turno: "Martes", fecha: "2025-06-25" },
+{ nombre: "Hna. Mariela Encinas", turno: "Martes", fecha: "2025-06-25" },
+{ nombre: "Hna. Marlene Estrada", turno: "Jueves", fecha: "2025-06-27" },
+{ nombre: "Hno. Marcial Avellaneda", turno: "Jueves", fecha: "2025-06-27" },
+{ nombre: "Hna. Milagros Guillén", turno: "Domingo Mañana", fecha: "2025-06-30" },
+{ nombre: "Hna. Geraldine ", turno: "Domingo Tarde", fecha: "2025-06-30" },
+{ nombre: "Hna. Jennifer Calderón", turno: "Domingo Mañana", fecha: "2025-06-30" },
+{ nombre: "Hna. Edid Santiago", turno: "Domingo Tarde", fecha: "2025-06-30" }
+];
+
+function exportarAPDF() {
+    document.body.classList.add('exportando-pdf'); // Agrega clase
+  
+    setTimeout(async () => {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF('p', 'mm', 'a4');
+      const content = document.querySelector("body");
+  
+      const canvas = await html2canvas(content, { scale: 2 });
+      const imgData = canvas.toDataURL('image/png');
+      const imgWidth = 210;
+      const pageHeight = 297;
+      const imgHeight = canvas.height * imgWidth / canvas.width;
+  
+      doc.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
+      //doc.save('registro_limpieza.pdf');
+       // Abrir el PDF en una nueva pestaña
+    const pdfBlob = doc.output('blob');
+    const pdfUrl = URL.createObjectURL(pdfBlob);
+    const newTab = window.open(pdfUrl, '_blank');
+    if (newTab) {
+      newTab.document.title = 'Registro de Limpieza';
+    } else {
+      alert('Por favor, permite las ventanas emergentes para ver el PDF.');
+    }
+      document.body.classList.remove('exportando-pdf'); // Limpia clase
+    }, 100);
+  }
+  ################################################################################
+
+  <!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Registro de Limpieza</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f4f6f8;
+      margin: 0;
+      padding: 20px;
+    }
+
+    h2 {
+      text-align: center;
+      color: #333;
+    }
+
+    .header {
+      position: sticky;
+      top: 0;
+      background-color: #fff;
+      z-index: 10;
+      padding: 10px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .filtros {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .filtros input {
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 14px;
+      width: 60%;
+      max-width: 300px;
+    }
+
+    .filtros button {
+      padding: 10px 20px;
+      background-color: #27ae60;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .filtros button:hover {
+      background-color: #219150;
+    }
+
+    .limpieza-filtro {
+      padding: 8px;
+      font-size: 14px;
+      width: 30%;
+      max-width: 200px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    /* Estilo bonito para el select con flechita verde */
+    .limpieza-filtro select {
+      padding: 10px 15px;
+      border: 2px solid #27ae60;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: bold;
+      color: #333;
+      background-color: #f7faf7;
+      background-image: url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"%3E%3Cpath fill="%2327ae60" d="M4 5l4 4 4-4z"%3E%3C/path%3E%3C/svg%3E');
+      background-repeat: no-repeat;
+      background-position: right 10px center;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      width: 100%; /* Ocupa todo el ancho posible */
+    }
+
+    .limpieza-filtro select:hover {
+      border-color: #219150;
+    }
+
+    .limpieza-filtro select:focus {
+      outline: none;
+      border-color: #219150;
+      box-shadow: 0 0 5px rgba(39, 174, 96, 0.5);
+    }
+
+    /* Tabla responsive */
+    .tabla-responsive {
+      width: 100%;
+      overflow-x: auto;
+      margin-top: 20px;
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+    }
+
+    .tabla-wrapper {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-start;
+      gap: 10px;
+    }
+
+    .hermano {
+      width: 100%;
+      max-width: 350px;
+      padding: 15px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      background-color: #fafafa;
+      position: relative;
+    }
+
+    .numero {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      font-size: 18px;
+      font-weight: bold;
+      color: #333;
+    }
+
+    .campo {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 10px;
+    }
+
+    .campo label {
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+
+    .campo input, .campo textarea {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+
+    textarea {
+      height: 80px;
+      resize: vertical;
+    }
+
+    .limpieza-realizada {
+      font-weight: bold;
+      padding: 5px;
+      border-radius: 4px;
+    }
+
+    .limpieza-realizada.sí {
+      color: white;
+      background-color: #27ae60;
+    }
+
+    .limpieza-realizada.no {
+      color: white;
+      background-color: #e74c3c;
+    }
+
+    @media (max-width: 768px) {
+      body {
+        padding: 10px;
+      }
+
+      .tabla-wrapper {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .hermano {
+        width: 100%;
+      }
+
+      .campo {
+        max-width: 100%;
+      }
+
+      .filtros {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .filtros input {
+        width: 80%;
+        max-width: 100%;
+        margin-bottom: 10px;
+      }
+
+      .limpieza-filtro {
+        width: 100%;
+        margin-bottom: 10px;
+      }
+
+      .btn-flotante {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background-color: #27ae60;
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 60px;
+        height: 60px;
+        font-size: 20px;
+        text-align: center;
+        line-height: 60px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        cursor: pointer;
+        z-index: 100;
+      }
+
+      .btn-flotante:hover {
+        background-color: #219150;
+      }
+      .exportando-pdf .btn-flotante {
+  display: none !important;
+}
+.exportando-pdf .header {
+  position: static !important;
+  box-shadow: none !important;
+}
+    }
+
+    /* Para pantallas de escritorio, el botón flotante está a la derecha inferior */
+    @media (min-width: 769px) {
+      .btn-flotante {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background-color: #27ae60;
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 60px;
+        height: 60px;
+        font-size: 20px;
+        text-align: center;
+        line-height: 60px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        cursor: pointer;
+        z-index: 100;
+      }
+
+      .btn-flotante:hover {
+        background-color: #219150;
+      }
+      .exportando-pdf .btn-regresar {
+  display: none !important;
+}
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <h2>Registro de Limpieza</h2>
+
+    <!-- Filtros -->
+    <div class="filtros">
+      <input type="text" id="buscarNombre" placeholder="Buscar por nombre..." oninput="filtrarNombres()">
+      <button onclick="redirigirATurno()">🕒 Mostrar Horarios</button>
+      <!-- Filtro de limpieza realizada (sin texto) -->
+      <div class="limpieza-filtro">
+        <select id="limpieza" onchange="filtrarPorLimpieza()">
+          <option value="">Todos</option>
+          <option value="sí">Sí</option>
+          <option value="no">No</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- Contenedor para los campos de la tabla -->
+  <div class="tabla-responsive">
+    <div class="tabla-wrapper" id="tablaUsuarios"></div>
+  </div>
+
+  <!-- Botón flotante para computadoras y móviles -->
+  <button class="btn-flotante" onclick="redirigirAInicio()">🏠</button>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script>
+  let usuarios = [
+    "Hno. Alexander Rengifo", "Hno. Vitmer", "Hno. George Yonatan Soto Navarro", "Hno. Daniel",
+    "Hno. Edgar Habad", "Hno. Blanca", "Hno. Adrian Blas", "Hno. Jose Espinoza",
+    "Hno. Anderson", "Hno. John Pariona", "Hno. Clemente Encinas", "Hna. Betty Rosado", 
+    "Hna. Gabriela", "Hno. Julian Samaritano","Hna. Hna. Elva", "Hna. Edid Santiago", 
+    "Hna. Edith Chinchay", "Hna. Jennifer Calderón","Hna. Karolyne Torres", "Hno. Marcial Avellaneda", 
+    "Hna. Milagros Guillén", "Hna. Mishell", "Hno. Sergio Quiliche", "Hna. Geraldine", 
+    "Hna. Jhoana Trinidad", "Hna. Ingrid Samaritano","Hno. Eduardo", "Hno. Rene Puño Pariona", 
+    "Hna. Karen Ventura", "Hna. Lida Blas", "Hna. Tessi Blas", "Hna. Reyna Caurino", 
+    "Hna. Marlene Estrada", "Hna. Erica", "Hna. Mariela Encinas", "Hno. Jeisen Hilario", 
+    "Hno. Sergio Linarez", "Hna. Clara Corales", "Hna. Feliciana Velasquez", "Hno. Faustino Linares", 
+    "Hna. Gloría Rodríguez", "Hno. Victoria Colonia", "Hno. Eli Timoteo", "Hna. Jenny Correa", 
+    "Hna. Yara Capinoa", "Hna. Rocio", "Hna. Rut", "Hno Snayder", 
+    "Hno. Jair", "Hna. Leydi Najar ", "Hna. Yolanda", "Hno. Favio Huaman", 
+    "Hna. Mayra Picón", "Hna. Carmen", "Hna. Derly Doris"
+  ];
+
+  let fechas = [
+"2025-06-08", "2025-0-0", "2025-06-22", "2025-0-0", "2025-6-08", "2025-0-0",
+"2025-07-06", "2025-06-10", "2025-0-0", "2025-0-0", "2025-0-0", "2025-0-0",
+"2025-0-0", "2025-0-0", "2025-0-0", "2025-07-01", "2025-0-0", "2025-06-29",
+"2025-0-0", "2025-0-0", "2025-0-0", "2025-06-08", "2025-07-03", "2025-06-29",
+"2025-06-22", "2025-06-22", "2025-0-0", "2025-0-0", "2025-06-05", "2025-0-0",
+"2025-0-0", "2025-0-0", "2025-06-24", "2025-06-17", "2025-06-26", "2025-06-26",
+"2025-06-19", "2025-05-01", "2025-06-05", "2025-0-0", "2025-06-19", "2025-07-01",
+"2025-06-22", "2025-6-12", "2025-07-03", "2025-0-0", "2025-07-06", "2025-06-10",
+"2025-06-6", "2025-06-03", "2025-0-0", "2025-06-06", "2025-06-24",
+"2025-06-03", "2025-06-03"
+
+];
+
+  let limpiezaRealizada = [
+  true, false, true, false, true, false, true, true, false, false, false, false,
+  false, true, false, false, false, true, true, false, false, true, false, true,
+  true, true, false, false, true, true, true, false, true, true, true, true,
+  true, false, true, false, true, true, false, true, true, false, false,true,
+  true, true, false, true, true, true, false
+  ];
+
+  let comentarios = [
+  "", "", "", "", "", "La hermaita es del anexo de naranjitos y realiza la limpieza los dias de culto alla", 
+  "", "Solo Martes y Jueves", "", "", "", "Los Domingos de ayuno en la tarde", 
+  "", "", "Los Domingos de ayuno en la tarde", "Domingos en la tarde", "Problemas de salud", "", 
+  "", "Los días jueves", "Domingos en la mañana", "", "", "Domingos en la tarde", 
+  "Domingos en la tarde", "Domingos en la tarde", "", "", "", "", 
+  "Los martes y jueves", "La hermanita se encuentra de viaje", "", "", "", "", 
+  "", "", "", "", "", "", 
+  "", "Los Martes y jueves", "", "", "Solo lo dias jueves", "Los Martes o jueves", 
+  "", "Los días martes", "Los días martes", "", "","",
+  "", ""
+];
+
+  function crearTabla() {
+    const tabla = document.getElementById("tablaUsuarios");
+    tabla.innerHTML = "";
+
+    usuarios.forEach((usuario, i) => {
+      const hermanoDiv = document.createElement("div");
+      hermanoDiv.classList.add("hermano");
+
+      hermanoDiv.innerHTML =  
+        `<div class="numero">${i + 1}</div>
+        <div class="campo">
+          <label>Nombre:</label>
+          <span>${usuario}</span>
+        </div>
+        <div class="campo">
+          <label>Fecha:</label>
+          <input type="text" value="${fechas[i]}" onchange="actualizarDato(${i}, 'fecha', this.value)">
+        </div>
+        <div class="campo">
+          <label>Limpieza Realizada:</label>
+          <div class="limpieza-realizada ${limpiezaRealizada[i] ? 'sí' : 'no'}">
+            ${limpiezaRealizada[i] ? 'Sí' : 'No'}
+          </div>
+        </div>
+        <div class="campo comentarios">
+          <label>Comentarios:</label>
+          <textarea onchange="actualizarDato(${i}, 'comentarios', this.value)">${comentarios[i]}</textarea>
+        </div>`;
+
+      tabla.appendChild(hermanoDiv);
+    });
+  }
+
+  function actualizarDato(index, campo, valor) {
+    if (campo === 'fecha') {
+      fechas[index] = valor;
+    } else if (campo === 'comentarios') {
+      comentarios[index] = valor;
+    }
+  }
+
+  function filtrarNombres() {
+    const filtro = document.getElementById('buscarNombre').value.toLowerCase();
+    const tabla = document.getElementById("tablaUsuarios");
+    const hermanos = tabla.getElementsByClassName("hermano");
+
+    for (let hermano of hermanos) {
+      const nombre = hermano.querySelector(".campo span").textContent.toLowerCase();
+      if (nombre.includes(filtro)) {
+        hermano.style.display = "";
+      } else {
+        hermano.style.display = "none";
+      }
+    }
+  }
+
+  function filtrarPorLimpieza() {
+    const filtro = document.getElementById('limpieza').value;
+    const tabla = document.getElementById("tablaUsuarios");
+    const hermanos = tabla.getElementsByClassName("hermano");
+
+    for (let hermano of hermanos) {
+      const limpieza = hermano.querySelector(".limpieza-realizada").textContent.toLowerCase();
+      if (filtro === "" || limpieza.includes(filtro)) {
+        hermano.style.display = "";
+      } else {
+        hermano.style.display = "none";
+      }
+    }
+  }
+
+  function redirigirATurno() {
+    window.location.href = "formularioturno.html";
+  }
+
+  function redirigirAInicio() {
+    window.location.href = "index.html";
+  }
+
+  crearTabla();
+</script>
+<script>
+  function exportarAPDF() {
+  document.body.classList.add('exportando-pdf'); // Agrega clase
+
+  setTimeout(async () => {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF('p', 'mm', 'a4');
+    const content = document.querySelector("body");
+
+    const canvas = await html2canvas(content, { scale: 2 });
+    const imgData = canvas.toDataURL('image/png');
+    const imgWidth = 210;
+    const pageHeight = 297;
+    const imgHeight = canvas.height * imgWidth / canvas.width;
+
+    doc.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
+    doc.save('registro_limpieza.pdf');
+
+    document.body.classList.remove('exportando-pdf'); // Limpia clase
+  }, 100);
+}
+  
+  </script>
+  <button onclick="exportarAPDF()" style="padding: 10px 20px; background-color: #3498db; color: white; border: none; border-radius: 6px; font-size: 14px; cursor: pointer;">📄 Exportar a PDF</button>
+  
+  </body>
+  
+  </html>
+</body>
+</html>
