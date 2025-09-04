@@ -8,7 +8,7 @@ let progress = document.getElementById('progress');
 let imagenProgreso = document.getElementById('imagen-progreso');
 let valorProgreso = 0;
 let boton = document.getElementById('redirigir');
-boton.disabled = true;  
+boton.disabled = false;  
 
 let interval = setInterval(function() {
     if (valorProgreso >= 100) {

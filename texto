@@ -265,8 +265,8 @@
 
   let limpiezaRealizada = [
     false, false, false, false, false, false, false, false, false, false, false, false,
-    false, false, false, false, false, false, false, false, false, true, false, false,
-    false, false, false, false, true, false, false, false, false, false, false, false,
+    false, false, false, false, false, false, false, false, false, false, false, false,
+    false, false, false, false, false, false, false, false, false, false, false, false,
     false, false, false, false, false, false, false, false, false, false
   ];
 
@@ -723,11 +723,11 @@ function exportarAPDF() {
 ];
 
   let limpiezaRealizada = [
-  true, false, true, false, true, false, true, true, false, false, false, false,
-  false, true, false, false, false, true, true, false, false, true, false, true,
-  true, true, false, false, true, true, true, false, true, true, true, true,
-  true, false, true, false, true, true, false, true, true, false, false,true,
-  true, true, false, true, true, true, false
+  false, false, false, false, false, false, false, false, false, false, false, false,
+  false, false, false, false, false, false, false, false, false, false, false, false,
+  false, false, false, false, false, false, false, false, false, false, false, false,
+  false, false, false, false, false, false, false, false, false, false, false,false,
+  false, false, false, false, false, false, false
   ];
 
   let comentarios = [
